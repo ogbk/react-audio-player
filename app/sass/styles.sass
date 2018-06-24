@@ -1,0 +1,197 @@
+// sass-lint:disable nesting-depth
+// sass-lint:disable no-vendor-prefixes
+
+$border-text-color: #00f;// blue
+$err-color: #f00;// red
+$app-color: #f0f8ff;
+$frame-color: #ffd733;
+$frame-save-color: #aed6f1;
+
+@mixin width-height($w, $h)
+  height: $h;
+  width: $w;
+
+@mixin same-width-height($v)
+  height: $v;
+  width: $v;
+
+@mixin margin-horiz($v)
+  margin-left: $v
+  margin-right: $v
+
+// sass-lint:disable no-misspelled-properties
+
+@mixin border-radius($radius)
+  -moz-border-radius: $radius;
+  -ms-border-radius: $radius;
+  -o-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+
+@mixin box-sizing($v)
+  -moz-box-sizing: $v;
+  -ms-box-sizing: $v;
+  -o-box-sizing: $v;
+  -webkit-box-sizing: $v;
+  box-sizing: $v;
+
+@mixin text-overflow($v)
+  -moz-text-overflow: $v;
+  -ms-text-overflow: $v;
+  -o-text-overflow: $v;
+  -webkit-text-overflow: $v;
+  text-overflow: $v;
+
+// sass-lint:enable no-misspelled-properties
+
+%frame-properties
+  @include border-radius(15px)
+  background-color: $frame-color
+  font-family: Comic Sans MS, Comic Sans, cursive
+  padding: .5em
+  position: absolute
+  text-align: center
+  z-index: 1000
+
+%frame-no-abort
+  margin-left: 13em
+  top: 1.5em
+  width: 30em
+
+%frame-option-span
+  display: table-cell
+  font-size: 1.5em
+  vertical-align: middle
+
+.hide
+  display: none
+
+.top
+  position: absolute
+  top: 0
+
+.bottom
+  bottom: 0
+  position: absolute
+
+.click
+  cursor: pointer
+
+.no-click
+  cursor: not-allowed
+
+#topic  // sass-lint:disable-line no-ids
+  @include margin-horiz(auto)
+  color: $border-text-color
+  font-family: Comic Sans MS, Comic Sans, cursive
+  font-size: 1.5em
+  margin-top: 1em
+  text-align: center
+
+#root  // sass-lint:disable-line no-ids
+  width: 100%
+
+  .app
+    @include width-height(56em, 25em)
+    @include margin-horiz(auto)
+    @include border-radius(15px)
+    background-color: $app-color
+    border: double .5em $border-text-color
+    left: 0
+    margin-top: 2em
+    padding: 1.5em
+    position: relative
+    top: 0
+
+    .tracks
+      @include width-height(100%, 20.25em)
+      @include box-sizing(border-box)
+      border-bottom: $border-text-color solid 1px
+      margin: 0 0 1.75em
+      overflow-y: auto
+      padding: 0
+      position: relative
+
+      .track
+        @include width-height(54em, 3.25em)
+        border: 0
+        margin-bottom: .75em
+        padding: 0
+        position: relative
+
+        .playback-option
+          @include same-width-height(3.25em)
+          margin-left: .5em
+
+          &:first-child
+            margin-left: 0
+
+        .audio-frame
+          @include width-height(25em, 3.25em)
+          @include margin-horiz(1.5em)
+          display: inline-block
+          position: relative
+
+          .audio-title
+            @include width-height(400px, 1em)
+            @include text-overflow(ellipsis)
+            color: $border-text-color
+            font-family: Comic Sans MS, Comic Sans, cursive
+            margin-bottom: .25em
+            overflow: hidden
+            white-space: nowrap
+
+          .audio-file
+            @include width-height(100%, 2em)
+
+        .track-action
+          @include same-width-height(3.25em)
+          margin-left: 1em
+
+    .actions
+      border: 0
+      height: 3em
+      margin: 0
+      padding: 0
+
+      .new,
+      .clear
+        @include same-width-height(3em)
+        margin: 0 2em 0 0
+        vertical-align: middle
+
+    .frame-abort
+      @extend %frame-properties
+      @include width-height(6em, 2em)
+      border: solid .25em $err-color
+      bottom: 1.5em
+      display: table
+      right: 1.5em
+
+      & span
+        @extend %frame-option-span
+
+    .frame-option
+      @include width-height(100%, 3em)
+      @include border-radius(7px)
+      background-color: $frame-save-color
+      display: table
+
+      &:nth-child(2)
+        margin-top: 1em
+
+      & span
+        @extend %frame-option-span
+
+    .audio-error
+      @extend %frame-properties
+      @extend %frame-no-abort
+      border: solid .25em $err-color
+
+      & span
+        @extend %frame-option-span
+
+    .upload-options
+      @extend %frame-no-abort
+      @extend %frame-properties
+      border: solid .25em $border-text-color
