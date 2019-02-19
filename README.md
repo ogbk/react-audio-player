@@ -29,11 +29,11 @@ React app that loads and plays audio files on user's pc
 
 	- [clear] => clear list of selected tracks
 	
-- InfoFrame => mounted in one of 2 cases
+- MessageFrame => mounted in one of 2 cases
 	- user selects file that's not audio ==> prompts reselection
 	- user selects file when track list isn't empty ==> prompts positioning of new file as either first or last in list
 
-	Both operations can abe aborted - an abort div is rendered and enabled whenever InfoFrame is mounted
+	Both operations can be aborted - an abort div is rendered and enabled whenever MessageFrame is mounted
 
 - AudioTrack => selected audio track with the following features
 	- name of selected track is displayed

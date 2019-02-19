@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-export class InfoFrame extends Component {
+export class MessageFrame extends Component {
   componentDidMount() { this.props.enableScreen(false); }
 
   /* =========== render ============ */
@@ -43,7 +43,7 @@ export class InfoFrame extends Component {
 
 /* =========== PropTypes ============ */
 
-InfoFrame.propTypes = {
+MessageFrame.propTypes = {
   editTracks: PropTypes.func.isRequired,
   reSelectAudio: PropTypes.func.isRequired,
   enableScreen: PropTypes.func.isRequired,

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import { AudioTrack } from './AudioTrack';
-import { InfoFrame } from './InfoFrame';
+import { MessageFrame } from './MessageFrame';
 
 export class App extends Component {
   constructor() {
@@ -9,8 +9,8 @@ export class App extends Component {
 
     this.state = {
       screen_enabled: true, // to (re-)enable actions on tracks
-      upload_options: false, // to render <Infoframe/> - add new track as either first or last
-      audio_error: false, // to render <Infoframe/> - when an audio selection error occurs
+      upload_options: false, // to render <MessageFrame/> - add new track as either first or last
+      audio_error: false, // to render <MessageFrame/> - when an audio selection error occurs
       tracks: [], // list of added tracks
     };
 
@@ -187,7 +187,7 @@ export class App extends Component {
   */
 
   enableScreen(bool) {
-    if (bool) { // unmount <InfoFrame/> and re-enable main audio operations
+    if (bool) { // unmount <MessageFrame/> and re-enable main audio operations
       this.setState({
         audio_error: false,
         upload_options: false,
@@ -198,7 +198,7 @@ export class App extends Component {
     }
   }
 
-  // unmount <InfoFrame/> and re-enable audio operations
+  // unmount <MessageFrame/> and re-enable audio operations
   reSelectAudio() {
     this.enableScreen(true);
     this.fileObj.click();
@@ -248,7 +248,7 @@ export class App extends Component {
         {
           (this.state.upload_options || this.state.audio_error) &&
 
-          <InfoFrame
+          <MessageFrame
             editTracks={this.editTracks}
             reSelectAudio={this.reSelectAudio}
             enableScreen={this.enableScreen}
