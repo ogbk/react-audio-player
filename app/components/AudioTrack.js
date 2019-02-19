@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export class AudioTrack extends Component {
-  constructor({ index }) {
-    super();
-    this.state = { index };
+  constructor(props) {
+    super(props);
+    this.state = { index: props.index };
 
     this.togglePlayPause = this.togglePlayPause.bind(this);
     this.playPrevOrNext = this.playPrevOrNext.bind(this);
@@ -105,8 +105,8 @@ export class AudioTrack extends Component {
           src="img/add_next.png"
           alt="Add next track"
           title="Add next track"
-          onClick={(evt) => {
-            this.props.editTracks('add_next', `${evt.target.parentNode.id}`);
+          onClick={() => {
+            this.props.editTracks('add_next', this.props.index);
           }}
         />
 
@@ -115,8 +115,8 @@ export class AudioTrack extends Component {
           src="img/delete.png"
           alt="Delete track"
           title="Delete track"
-          onClick={(evt) => {
-            this.props.editTracks('delete', `${evt.target.parentNode.id}`);
+          onClick={() => {
+            this.props.editTracks('delete', this.props.index);
           }}
         />
 
@@ -125,8 +125,8 @@ export class AudioTrack extends Component {
           src="img/change.png"
           alt="Replace track"
           title="Replace track"
-          onClick={(evt) => {
-            this.props.editTracks('replace', `${evt.target.parentNode.id}`);
+          onClick={() => {
+            this.props.editTracks('replace', this.props.index);
           }}
         />
       </div>
@@ -138,7 +138,7 @@ AudioTrack.propTypes = {
   src: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   pausePlayingTrack: PropTypes.func.isRequired,
-  index: PropTypes.string.isRequired,
+  index: PropTypes.number.isRequired,
   editTracks: PropTypes.func.isRequired,
   playPrev: PropTypes.func.isRequired,
   playNext: PropTypes.func.isRequired,

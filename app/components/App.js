@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
 
@@ -18,7 +17,6 @@ export class App extends Component {
     // - list of values to create and play tracks
     // - doesn't affect component rendering, therefore not included in state
     this.INFO = {
-      myURL: (window.URL || window.webkitURL || URL),
       action: null, // list of actions = delete | replace | add_first | add_last | add_next
       current_index: null,
       playingAudio: null,
@@ -47,7 +45,7 @@ export class App extends Component {
     prev.children[3].children[1].play();
   }
 
-  // play either next track or first track (if _track is last in list)
+  // play next track or first track (if _track is last in list)
   playNext(_track) {
     const next = (_track.nextElementSibling || _track.parentNode.firstElementChild);
     next.children[3].children[1].play();
@@ -58,9 +56,8 @@ export class App extends Component {
     this.enableScreen(true);
 
     if (_action === 'delete') {
-      const index = this.getIndexByKey(this.state.tracks, _idx);
-      const copy = this.state.tracks;
-      copy.splice(index, 1);
+      const copy = [...(this.state.tracks)];
+      copy.splice(_idx, 1);
       this.setState({ tracks: copy });
     } else {
       this.INFO.current_index = _idx;
@@ -68,7 +65,6 @@ export class App extends Component {
       this.fileObj.click(); // triggers change event on this.fileObj
     }
   }
-
 
   pausePlayingTrack(_audio) {
     if (_audio !== this.INFO.playingAudio) {
@@ -81,53 +77,44 @@ export class App extends Component {
 
   // triggered by this.fileObj.click()
   selectAudioFile() {
+    const thisURL = (window.URL || window.webkitURL || URL);
     const fileObj = this.fileObj;
 
     if (fileObj.value) { // proceed ONLY when a file is selected
       const targetfile = fileObj.files[0];
       if (targetfile.type.indexOf('audio') !== -1) { // accepts only audio files
-        // create an <AudioTrack/>
-        const newAudiotrack = (() => (
-          <AudioTrack
-            src={this.INFO.myURL.createObjectURL(targetfile)}
-            name={targetfile.name}
-            pausePlayingTrack={this.pausePlayingTrack}
-            key={`${this.INFO.index_counter}`}
-            index={`${this.INFO.index_counter}`}
-            editTracks={this.editTracks}
-            playPrev={this.playPrev}
-            playNext={this.playNext}
-          />)
-        )();
+        const newAudioData = {
+          src: thisURL.createObjectURL(targetfile),
+          name: targetfile.name,
+          keyIndex: this.INFO.index_counter,
+        };
 
         this.INFO.index_counter += 1;
 
-        this.INFO.myURL.revokeObjectURL(targetfile);
+        thisURL.revokeObjectURL(targetfile);
 
         // execute action stored by [editTracks()] before [this.fileObj] was clicked
         // if action was "delete", then it had already been executed by [editTracks()]
 
         if (this.INFO.action === 'replace' || 'add_next' || 'add_first' || 'add_last') {
-          const copy = this.state.tracks;
-          let index;
+          const copy = [...(this.state.tracks)];
+          const index = this.INFO.current_index;
 
           switch (this.INFO.action) {
             case 'replace':
-              index = this.getIndexByKey(this.state.tracks, this.INFO.current_index);
-              copy.splice(index, 1, newAudiotrack);
+              copy.splice(index, 1, newAudioData);
               break;
 
             case 'add_next':
-              index = this.getIndexByKey(this.state.tracks, this.INFO.current_index);
-              copy.splice(index + 1, 0, newAudiotrack);
+              copy.splice(index + 1, 0, newAudioData);
               break;
 
             case 'add_first':
-              copy.unshift(newAudiotrack);
+              copy.unshift(newAudioData);
               break;
 
             case 'add_last':
-              copy.push(newAudiotrack);
+              copy.push(newAudioData);
               break;
 
             default:
@@ -159,7 +146,6 @@ export class App extends Component {
     this.fileObj.value = null;
   }
 
-
   enableScreen(bool) {
     if (bool) { // unmount <MessageFrame/> and re-enable main audio operations
       this.setState({
@@ -180,11 +166,22 @@ export class App extends Component {
 
   render() {
     return (
-
       <div className="app">
-
         <div className="tracks">
-          {this.state.tracks}
+          {
+            this.state.tracks.map(({ src, name, keyIndex }, idx) => (
+              <AudioTrack
+                src={src}
+                name={name}
+                index={idx}
+                key={`${keyIndex}`}
+                editTracks={this.editTracks}
+                pausePlayingTrack={this.pausePlayingTrack}
+                playPrev={this.playPrev}
+                playNext={this.playNext}
+              />
+            ))
+          }
         </div>
 
         <div className="actions">
@@ -203,7 +200,6 @@ export class App extends Component {
             title={(this.state.screen_enabled) ? 'Clear tracks' : ''}
             onClick={() => { if (this.state.screen_enabled) { this.clearTracks(); } }}
           />
-
         </div>
 
         <input
@@ -213,7 +209,6 @@ export class App extends Component {
           ref={(_file) => { this.fileObj = _file; }}
           onChange={this.selectAudioFile}
         />
-
 
         {
           (this.state.upload_options || this.state.audio_error) &&
