@@ -6,14 +6,13 @@ export class AudioTrack extends Component {
     super();
     this.state = { index };
 
-    this.playOrPause = this.playOrPause.bind(this);
-    this.playOtherTrack = this.playOtherTrack.bind(this);
+    this.togglePlayPause = this.togglePlayPause.bind(this);
+    this.playPrevOrNext = this.playPrevOrNext.bind(this);
     this.handlePause = this.handlePause.bind(this);
     this.handlePlay = this.handlePlay.bind(this);
   }
 
-  // play or pause this track
-  playOrPause(evt) {
+  togglePlayPause(evt) {
     const audio = evt.target.nextElementSibling.nextElementSibling.children[1];
 
     if (audio.ended || audio.paused) {
@@ -23,8 +22,7 @@ export class AudioTrack extends Component {
     }
   }
 
-  // play either the track before this or the one after
-  playOtherTrack(audioDiv, toPlay, hasEnded) {
+  playPrevOrNext(audioDiv, toPlay, hasEnded) {
     if (!hasEnded) { // pause this track if it has not ended
       audioDiv.children[3].children[1].pause();
     }
@@ -36,7 +34,6 @@ export class AudioTrack extends Component {
     }
   }
 
-  // set values for <play-pause> item when track is paused
   handlePause(evt) {
     const playPause = evt.target.parentNode.previousElementSibling.previousElementSibling;
     playPause.src = 'img/paused.png';
@@ -44,7 +41,6 @@ export class AudioTrack extends Component {
     playPause.title = 'PLAY';
   }
 
-  // set values for <play-pause> item when track is playing
   handlePlay(evt) {
     const audio = evt.target;
     const playPause = audio.parentNode.previousElementSibling.previousElementSibling;
@@ -52,10 +48,8 @@ export class AudioTrack extends Component {
     playPause.alt = 'PAUSE';
     playPause.title = 'PAUSE';
 
-    this.props.pausePlayingTrack(audio); // pause whichever track is currently playing
+    this.props.pausePlayingTrack(audio);
   }
-
-  /* =========== render ============ */
 
   render() {
     return (
@@ -68,7 +62,7 @@ export class AudioTrack extends Component {
           alt="Play previous track"
           title="Play previous track"
           onClick={(evt) => {
-            this.playOtherTrack(evt.target.parentNode, 'prev', false);
+            this.playPrevOrNext(evt.target.parentNode, 'prev', false);
           }}
         />
 
@@ -77,7 +71,7 @@ export class AudioTrack extends Component {
           src="img/paused.png"
           alt="PLAY"
           title="PLAY"
-          onClick={this.playOrPause}
+          onClick={this.togglePlayPause}
         />
 
         <img
@@ -86,7 +80,7 @@ export class AudioTrack extends Component {
           alt="Play next track"
           title="Play next track"
           onClick={(evt) => {
-            this.playOtherTrack(evt.target.parentNode, 'next', false);
+            this.playPrevOrNext(evt.target.parentNode, 'next', false);
           }}
         />
 
@@ -101,7 +95,7 @@ export class AudioTrack extends Component {
             onPlaying={this.handlePlay}
             onPause={this.handlePause}
             onEnded={(evt) => {
-              this.playOtherTrack(evt.target.parentNode.parentNode, 'next', true);
+              this.playPrevOrNext(evt.target.parentNode.parentNode, 'next', true);
             }}
           />
         </div>
@@ -139,8 +133,6 @@ export class AudioTrack extends Component {
     );
   }
 }
-
-/* =========== PropTypes ============ */
 
 AudioTrack.propTypes = {
   src: PropTypes.string.isRequired,

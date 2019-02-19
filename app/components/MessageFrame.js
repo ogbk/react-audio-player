@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 export class MessageFrame extends Component {
   componentDidMount() { this.props.enableScreen(false); }
 
-  /* =========== render ============ */
-
   render() {
     return (
       (this.props.audio_error) ?
@@ -39,9 +37,6 @@ export class MessageFrame extends Component {
     );
   }
 }
-
-
-/* =========== PropTypes ============ */
 
 MessageFrame.propTypes = {
   editTracks: PropTypes.func.isRequired,
