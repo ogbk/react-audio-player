@@ -5,22 +5,28 @@ export class MessageFrame extends Component {
   componentDidMount() { this.props.enableScreen(false); }
 
   render() {
+    const {
+      displayMessage: propsDisplayMessage,
+      updateTracks: propsUpdateTracks,
+      reSelectAudio: propsReSelectAudio,
+    } = this.props;
+
     let toRender = null;
 
-    switch (this.props.displayMessage) {
+    switch (propsDisplayMessage) {
       case 'NEWTRACK_FIRST_OR_LAST':
         toRender = (
           <div className="upload-options">
             <div
               className="frame-option click"
-              onClick={() => { this.props.updateTracks('add_first', null); }}
+              onClick={() => { propsUpdateTracks('add_first', null); }}
             >
               <span>Save as first track</span>
             </div>
 
             <div
               className="frame-option click"
-              onClick={() => { this.props.updateTracks('add_last', null); }}
+              onClick={() => { propsUpdateTracks('add_last', null); }}
             >
               <span>Save as last track</span>
             </div>
@@ -33,7 +39,7 @@ export class MessageFrame extends Component {
           <div className="audio-error">
             <div
               className="frame-option click"
-              onClick={() => { this.props.reSelectAudio(); }}
+              onClick={() => { propsReSelectAudio(); }}
             >
               <span>Please select only audio files</span>
             </div>
