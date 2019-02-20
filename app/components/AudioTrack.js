@@ -4,8 +4,6 @@ import PropTypes from 'prop-types';
 export class AudioTrack extends Component {
   constructor(props) {
     super(props);
-    this.state = { index: props.index };
-
     this.togglePlayPause = this.togglePlayPause.bind(this);
     this.playPrevOrNext = this.playPrevOrNext.bind(this);
     this.handlePause = this.handlePause.bind(this);
@@ -54,7 +52,7 @@ export class AudioTrack extends Component {
   render() {
     return (
 
-      <div className="track" id={`${this.state.index}`} >
+      <div className="track">
 
         <img
           className={'playback-option click'}
