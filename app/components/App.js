@@ -8,8 +8,7 @@ export class App extends Component {
 
     this.state = {
       screen_enabled: true, // to (re-)enable actions on tracks
-      upload_options: false, // to render <MessageFrame/> - add new track as either first or last
-      audio_error: false, // to render <MessageFrame/> - when an audio selection error occurs
+      displayMessage: null,
       tracks: [], // list of added tracks
     };
 
@@ -25,18 +24,13 @@ export class App extends Component {
 
     this.enableScreen = this.enableScreen.bind(this);
     this.reSelectAudio = this.reSelectAudio.bind(this);
-    this.newTrack = this.newTrack.bind(this);
+    this.addNewTrack = this.addNewTrack.bind(this);
     this.clearTracks = this.clearTracks.bind(this);
-    this.getIndexByKey = this.getIndexByKey.bind(this);
-    this.editTracks = this.editTracks.bind(this);
+    this.updateTracks = this.updateTracks.bind(this);
     this.playPrev = this.playPrev.bind(this);
     this.playNext = this.playNext.bind(this);
     this.changePlayingAudio = this.changePlayingAudio.bind(this);
     this.selectAudioFile = this.selectAudioFile.bind(this);
-  }
-
-  getIndexByKey(arr, key) {
-    return (arr.findIndex(({ props }) => (props.index === key)));
   }
 
   // play previous track or last track (if _track is first in list)
@@ -52,7 +46,7 @@ export class App extends Component {
   }
 
   // execute _action (delete || replace || add_next) on track[_idx]
-  editTracks(_action, _idx) {
+  updateTracks(_action, _idx) {
     this.enableScreen(true);
 
     if (_action === 'delete') {
@@ -78,7 +72,7 @@ export class App extends Component {
   // triggered by this.fileObj.click()
   selectAudioFile() {
     const thisURL = (window.URL || window.webkitURL || URL);
-    const fileObj = this.fileObj;
+    const { fileObj } = this;
 
     if (fileObj.value) { // proceed ONLY when a file is selected
       const targetfile = fileObj.files[0];
@@ -93,8 +87,8 @@ export class App extends Component {
 
         thisURL.revokeObjectURL(targetfile);
 
-        // execute action stored by [editTracks()] before [this.fileObj] was clicked
-        // if action was "delete", then it had already been executed by [editTracks()]
+        // execute action stored by [updateTracks()] before [this.fileObj] was clicked
+        // if action was "delete", then it had already been executed by [updateTracks()]
 
         if (this.INFO.action === 'replace' || 'add_next' || 'add_first' || 'add_last') {
           const copy = [...(this.state.tracks)];
@@ -124,7 +118,7 @@ export class App extends Component {
           this.setState({ tracks: copy });
         }
       } else { // non-audio file is selected
-        this.setState({ audio_error: true });
+        this.setState({ displayMessage: 'NOT_AUDIO_FILE' });
       }
     }
 
@@ -132,11 +126,11 @@ export class App extends Component {
   }
 
 
-  newTrack() {
-    if ((this.state.tracks).length > 0) {
-      this.setState({ upload_options: true });
+  addNewTrack() {
+    if (this.state.tracks.length) {
+      this.setState({ displayMessage: 'NEWTRACK_FIRST_OR_LAST' });
     } else {
-      this.editTracks('add_last', null);
+      this.updateTracks('add_last', null);
     }
   }
 
@@ -149,8 +143,7 @@ export class App extends Component {
   enableScreen(bool) {
     if (bool) { // unmount <MessageFrame/> and re-enable main audio operations
       this.setState({
-        audio_error: false,
-        upload_options: false,
+        displayMessage: false,
         screen_enabled: true,
       });
     } else { // disable main audio operations
@@ -175,7 +168,7 @@ export class App extends Component {
                 name={name}
                 index={idx}
                 key={`${keyIndex}`}
-                editTracks={this.editTracks}
+                updateTracks={this.updateTracks}
                 changePlayingAudio={this.changePlayingAudio}
                 playPrev={this.playPrev}
                 playNext={this.playNext}
@@ -190,7 +183,7 @@ export class App extends Component {
             src="img/new.png"
             alt={(this.state.screen_enabled) ? 'New track' : ''}
             title={(this.state.screen_enabled) ? 'New track' : ''}
-            onClick={() => { if (this.state.screen_enabled) { this.newTrack(); } }}
+            onClick={() => { if (this.state.screen_enabled) { this.addNewTrack(); } }}
           />
 
           <img
@@ -211,24 +204,22 @@ export class App extends Component {
         />
 
         {
-          (this.state.upload_options || this.state.audio_error) &&
+          (this.state.displayMessage) &&
 
-          <MessageFrame
-            editTracks={this.editTracks}
-            reSelectAudio={this.reSelectAudio}
-            enableScreen={this.enableScreen}
-            audio_error={this.state.audio_error}
-          />
-        }
+          <div>
+            <MessageFrame
+              updateTracks={this.updateTracks}
+              reSelectAudio={this.reSelectAudio}
+              displayMessage={this.state.displayMessage}
+              enableScreen={this.enableScreen}
+            />
 
-        {
-          (this.state.upload_options || this.state.audio_error) &&
-
-          <div
-            className="frame-abort click"
-            onClick={() => { this.enableScreen(true); }}
-          >
-            <span>ABORT</span>
+            <div
+              className="frame-abort click"
+              onClick={() => { this.enableScreen(true); }}
+            >
+              <span>ABORT</span>
+            </div>
           </div>
         }
 
