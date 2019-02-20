@@ -7,7 +7,7 @@ export class App extends Component {
     super();
 
     this.state = {
-      screen_enabled: true, // to (re-)enable actions on tracks
+      screenEnabled: true, // to (re-)enable actions on tracks
       displayMessage: null,
       tracks: [], // list of added tracks
     };
@@ -19,7 +19,6 @@ export class App extends Component {
       action: null, // list of actions = delete | replace | add_first | add_last | add_next
       current_index: null,
       playingAudio: null,
-      index_counter: 0,
     };
 
     this.enableScreen = this.enableScreen.bind(this);
@@ -80,10 +79,8 @@ export class App extends Component {
         const newAudioData = {
           src: thisURL.createObjectURL(targetfile),
           name: targetfile.name,
-          keyIndex: this.INFO.index_counter,
+          keyIndex: this.state.tracks.length,
         };
-
-        this.INFO.index_counter += 1;
 
         thisURL.revokeObjectURL(targetfile);
 
@@ -136,7 +133,6 @@ export class App extends Component {
 
   clearTracks() {
     this.setState({ tracks: [] });
-    this.INFO.index_counter = 0;
     this.fileObj.value = null;
   }
 
@@ -144,10 +140,10 @@ export class App extends Component {
     if (bool) { // unmount <MessageFrame/> and re-enable main audio operations
       this.setState({
         displayMessage: false,
-        screen_enabled: true,
+        screenEnabled: true,
       });
     } else { // disable main audio operations
-      this.setState({ screen_enabled: false });
+      this.setState({ screenEnabled: false });
     }
   }
 
@@ -179,19 +175,19 @@ export class App extends Component {
 
         <div className="actions">
           <img
-            className={(this.state.screen_enabled) ? 'new click' : 'new no-click'}
+            className={(this.state.screenEnabled) ? 'new click' : 'new no-click'}
             src="img/new.png"
-            alt={(this.state.screen_enabled) ? 'New track' : ''}
-            title={(this.state.screen_enabled) ? 'New track' : ''}
-            onClick={() => { if (this.state.screen_enabled) { this.addNewTrack(); } }}
+            alt={(this.state.screenEnabled) ? 'New track' : ''}
+            title={(this.state.screenEnabled) ? 'New track' : ''}
+            onClick={() => { if (this.state.screenEnabled) { this.addNewTrack(); } }}
           />
 
           <img
-            className={(this.state.screen_enabled) ? 'clear click' : 'clear no-click'}
+            className={(this.state.screenEnabled) ? 'clear click' : 'clear no-click'}
             src="img/clear.png"
-            alt={(this.state.screen_enabled) ? 'Clear tracks' : ''}
-            title={(this.state.screen_enabled) ? 'Clear tracks' : ''}
-            onClick={() => { if (this.state.screen_enabled) { this.clearTracks(); } }}
+            alt={(this.state.screenEnabled) ? 'Clear tracks' : ''}
+            title={(this.state.screenEnabled) ? 'Clear tracks' : ''}
+            onClick={() => { if (this.state.screenEnabled) { this.clearTracks(); } }}
           />
         </div>
 
