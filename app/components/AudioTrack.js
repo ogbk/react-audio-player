@@ -4,14 +4,20 @@ import PropTypes from 'prop-types';
 export class AudioTrack extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      isPlaying: false,
+      togglePlaySrc: 'img/paused.png',
+      togglePlayTitle: 'PLAY',
+    };
+
     this.togglePlayPause = this.togglePlayPause.bind(this);
-    this.playPrevOrNext = this.playPrevOrNext.bind(this);
-    this.handlePause = this.handlePause.bind(this);
-    this.handlePlay = this.handlePlay.bind(this);
+    this.handleNotPlaying = this.handleNotPlaying.bind(this);
+    this.handlePlaying = this.handlePlaying.bind(this);
   }
 
-  togglePlayPause(evt) {
-    const audio = evt.target.nextElementSibling.nextElementSibling.children[1];
+  togglePlayPause() {
+    const { audio } = this;
 
     if (audio.ended || audio.paused) {
       audio.play();
@@ -20,56 +26,61 @@ export class AudioTrack extends Component {
     }
   }
 
-  playPrevOrNext(audioDiv, toPlay, hasEnded) {
-    if (!hasEnded) { // pause this track if it has not ended
-      audioDiv.children[3].children[1].pause();
-    }
-
-    if (toPlay === 'next') {
-      this.props.playNext(audioDiv);
-    } else if (toPlay === 'prev') {
-      this.props.playPrev(audioDiv);
-    }
+  handleNotPlaying() {
+    this.setState({
+      isPlaying: false,
+      togglePlaySrc: 'img/paused.png',
+      togglePlayTitle: 'PLAY',
+    });
   }
 
-  handlePause(evt) {
-    const playPause = evt.target.parentNode.previousElementSibling.previousElementSibling;
-    playPause.src = 'img/paused.png';
-    playPause.alt = 'PLAY';
-    playPause.title = 'PLAY';
-  }
+  handlePlaying() {
+    this.setState({
+      isPlaying: true,
+      togglePlaySrc: 'img/playing.png',
+      togglePlayTitle: 'PAUSE',
+    });
 
-  handlePlay(evt) {
-    const audio = evt.target;
-    const playPause = audio.parentNode.previousElementSibling.previousElementSibling;
-    playPause.src = 'img/playing.png';
-    playPause.alt = 'PAUSE';
-    playPause.title = 'PAUSE';
-
-    this.props.pausePlayingTrack(audio);
+    const { audio } = this;
+    this.props.changePlayingAudio(audio);
   }
 
   render() {
+    const {
+      playPrev: propsPlayPrev,
+      playNext: propsPlayNext,
+      src: propsAudioSrc,
+      name: propsAudioName,
+      index: propsAudioIndex,
+      editTracks: propsEditTracks,
+    } = this.props;
+
+    const {
+      togglePlaySrc: statePlayBtnSrc,
+      togglePlayTitle: statePlayBtnTitle,
+    } = this.state;
+
     return (
-
-      <div className="track">
-
+      <div className="track" ref={(_track) => { this.track = _track; }}>
         <img
           className={'playback-option click'}
           src="img/play_prev.png"
           alt="Play previous track"
           title="Play previous track"
-          onClick={(evt) => {
-            this.playPrevOrNext(evt.target.parentNode, 'prev', false);
+          onClick={() => {
+            this.audio.pause();
+            propsPlayPrev(this.track);
           }}
+          ref={(_playPrevBtn) => { this.playPrevBtn = _playPrevBtn; }}
         />
 
         <img
           className={'playback-option click'}
-          src="img/paused.png"
-          alt="PLAY"
-          title="PLAY"
+          src={statePlayBtnSrc}
+          alt={statePlayBtnTitle}
+          title={statePlayBtnTitle}
           onClick={this.togglePlayPause}
+          ref={(_togglePlayBtn) => { this.togglePlayBtn = _togglePlayBtn; }}
         />
 
         <img
@@ -77,24 +88,27 @@ export class AudioTrack extends Component {
           src="img/play_next.png"
           alt="Play next track"
           title="Play next track"
-          onClick={(evt) => {
-            this.playPrevOrNext(evt.target.parentNode, 'next', false);
+          onClick={() => {
+            this.audio.pause();
+            propsPlayNext(this.track);
           }}
+          ref={(_playNextBtn) => { this.playNextBtn = _playNextBtn; }}
         />
 
         <div className="audio-frame">
-          <span className="audio-title top">{this.props.name}</span>
+          <span className="audio-title top">{propsAudioName}</span>
           <audio
             className="audio-file bottom"
             controls="controls"
             preload="metadata"
-            src={this.props.src}
-            onPlay={this.handlePlay}
-            onPlaying={this.handlePlay}
-            onPause={this.handlePause}
-            onEnded={(evt) => {
-              this.playPrevOrNext(evt.target.parentNode.parentNode, 'next', true);
+            src={propsAudioSrc}
+            onPlay={this.handlePlaying}
+            onPlaying={this.handlePlaying}
+            onPause={this.handleNotPlaying}
+            onEnded={() => {
+              propsPlayNext(this.track);
             }}
+            ref={(_audio) => { this.audio = _audio; }}
           />
         </div>
 
@@ -104,7 +118,7 @@ export class AudioTrack extends Component {
           alt="Add next track"
           title="Add next track"
           onClick={() => {
-            this.props.editTracks('add_next', this.props.index);
+            propsEditTracks('add_next', propsAudioIndex);
           }}
         />
 
@@ -114,7 +128,7 @@ export class AudioTrack extends Component {
           alt="Delete track"
           title="Delete track"
           onClick={() => {
-            this.props.editTracks('delete', this.props.index);
+            propsEditTracks('delete', propsAudioIndex);
           }}
         />
 
@@ -124,7 +138,7 @@ export class AudioTrack extends Component {
           alt="Replace track"
           title="Replace track"
           onClick={() => {
-            this.props.editTracks('replace', this.props.index);
+            propsEditTracks('replace', propsAudioIndex);
           }}
         />
       </div>
@@ -135,7 +149,7 @@ export class AudioTrack extends Component {
 AudioTrack.propTypes = {
   src: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  pausePlayingTrack: PropTypes.func.isRequired,
+  changePlayingAudio: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   editTracks: PropTypes.func.isRequired,
   playPrev: PropTypes.func.isRequired,

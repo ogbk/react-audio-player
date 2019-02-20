@@ -31,7 +31,7 @@ export class App extends Component {
     this.editTracks = this.editTracks.bind(this);
     this.playPrev = this.playPrev.bind(this);
     this.playNext = this.playNext.bind(this);
-    this.pausePlayingTrack = this.pausePlayingTrack.bind(this);
+    this.changePlayingAudio = this.changePlayingAudio.bind(this);
     this.selectAudioFile = this.selectAudioFile.bind(this);
   }
 
@@ -66,7 +66,7 @@ export class App extends Component {
     }
   }
 
-  pausePlayingTrack(_audio) {
+  changePlayingAudio(_audio) {
     if (_audio !== this.INFO.playingAudio) {
       if (this.INFO.playingAudio) {
         this.INFO.playingAudio.pause();
@@ -176,7 +176,7 @@ export class App extends Component {
                 index={idx}
                 key={`${keyIndex}`}
                 editTracks={this.editTracks}
-                pausePlayingTrack={this.pausePlayingTrack}
+                changePlayingAudio={this.changePlayingAudio}
                 playPrev={this.playPrev}
                 playNext={this.playNext}
               />
