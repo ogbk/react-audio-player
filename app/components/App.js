@@ -154,11 +154,16 @@ export class App extends Component {
   }
 
   render() {
+    const {
+      tracks: stateTracks,
+      screenEnabled: stateScreenEnabled,
+      displayMessage: stateDisplayMessage,
+    } = this.state;
     return (
       <div className="app">
         <div className="tracks">
           {
-            this.state.tracks.map(({ src, name, keyIndex }, idx) => (
+            stateTracks.map(({ src, name, keyIndex }, idx) => (
               <AudioTrack
                 src={src}
                 name={name}
@@ -175,19 +180,19 @@ export class App extends Component {
 
         <div className="actions">
           <img
-            className={(this.state.screenEnabled) ? 'new click' : 'new no-click'}
+            className={(stateScreenEnabled) ? 'new click' : 'new no-click'}
             src="img/new.png"
-            alt={(this.state.screenEnabled) ? 'New track' : ''}
-            title={(this.state.screenEnabled) ? 'New track' : ''}
-            onClick={() => { if (this.state.screenEnabled) { this.addNewTrack(); } }}
+            alt={(stateScreenEnabled) ? 'New track' : ''}
+            title={(stateScreenEnabled) ? 'New track' : ''}
+            onClick={() => { if (stateScreenEnabled) { this.addNewTrack(); } }}
           />
 
           <img
-            className={(this.state.screenEnabled) ? 'clear click' : 'clear no-click'}
+            className={(stateScreenEnabled) ? 'clear click' : 'clear no-click'}
             src="img/clear.png"
-            alt={(this.state.screenEnabled) ? 'Clear tracks' : ''}
-            title={(this.state.screenEnabled) ? 'Clear tracks' : ''}
-            onClick={() => { if (this.state.screenEnabled) { this.clearTracks(); } }}
+            alt={(stateScreenEnabled) ? 'Clear tracks' : ''}
+            title={(stateScreenEnabled) ? 'Clear tracks' : ''}
+            onClick={() => { if (stateScreenEnabled) { this.clearTracks(); } }}
           />
         </div>
 
@@ -200,13 +205,13 @@ export class App extends Component {
         />
 
         {
-          (this.state.displayMessage) &&
+          stateDisplayMessage &&
 
           <div>
             <MessageFrame
               updateTracks={this.updateTracks}
               reSelectAudio={this.reSelectAudio}
-              displayMessage={this.state.displayMessage}
+              displayMessage={stateDisplayMessage}
               enableScreen={this.enableScreen}
             />
 
