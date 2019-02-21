@@ -211,23 +211,13 @@ export class App extends Component {
 
         {
           stateDisplayMessage &&
-
-          <div>
-            <MessageFrame
-              updateTracks={this.updateTracks}
-              clearTracks={this.clearTracks}
-              reSelectAudio={this.reSelectAudio}
-              displayMessage={stateDisplayMessage}
-              enableScreen={this.enableScreen}
-            />
-
-            <div
-              className="frame-abort click"
-              onClick={() => { this.enableScreen(true); }}
-            >
-              <span>ABORT</span>
-            </div>
-          </div>
+          <MessageFrame
+            updateTracks={this.updateTracks}
+            clearTracks={this.clearTracks}
+            reSelectAudio={this.reSelectAudio}
+            displayMessage={stateDisplayMessage}
+            enableScreen={this.enableScreen}
+          />
         }
 
       </div>

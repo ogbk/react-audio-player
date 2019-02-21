@@ -10,6 +10,7 @@ export class MessageFrame extends Component {
       updateTracks: propsUpdateTracks,
       reSelectAudio: propsReSelectAudio,
       clearTracks: propsClearTracks,
+      enableScreen: propsEnableScreen,
     } = this.props;
 
     let toRender = null;
@@ -65,7 +66,18 @@ export class MessageFrame extends Component {
         break;
     }
 
-    return (toRender);
+    return (
+      <div>
+        {toRender}
+
+        <div
+          className="frame-abort click"
+          onClick={() => { propsEnableScreen(true); }}
+        >
+          <span>ABORT</span>
+        </div>
+      </div>
+    );
   }
 }
 
