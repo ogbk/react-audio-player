@@ -12,13 +12,13 @@ export class App extends Component {
       tracks: [], // list of added tracks
     };
 
-    // [INFO]
-    // - list of values to create and play tracks
-    // - doesn't affect component rendering, therefore not included in state
-    this.INFO = {
-      action: null, // list of actions = delete | replace | add_first | add_last | add_next
-      current_index: null,
+    // dataStack - detached from state, doesn't trigger UI changes
+    this.dataStack = {
+      pendingAction: null, // delete | replace | add_first | add_last | add_next
+      pendingIndex: null,
       playingAudio: null,
+      thisURL: (window.URL || window.webkitURL || URL),
+      fileObj: null,
     };
 
     this.playPrev = this.playPrev.bind(this);
@@ -62,29 +62,34 @@ export class App extends Component {
       copy.splice(_idx, 1);
       this.setTracksReleaseScreen(copy);
     } else {
-      this.INFO.current_index = _idx;
-      this.INFO.action = _action;
-      this.fileObj.click(); // triggers change event on this.fileObj
+      const { dataStack } = this;
+      dataStack.pendingIndex = _idx;
+      dataStack.pendingAction = _action;
+      dataStack.fileObj.click(); // triggers selectAudioFile()
     }
   }
 
   changePlayingAudio(_audio) {
-    if (_audio !== this.INFO.playingAudio) {
-      if (this.INFO.playingAudio) {
-        this.INFO.playingAudio.pause();
+    const { dataStack } = this;
+    if (_audio !== dataStack.playingAudio) {
+      if (dataStack.playingAudio) {
+        dataStack.playingAudio.pause();
       }
-      this.INFO.playingAudio = _audio;
+      dataStack.playingAudio = _audio;
     }
   }
 
-  // triggered by this.fileObj.click()
+  // triggered by this.dataStack.fileObj.click()
   selectAudioFile() {
-    const thisURL = (window.URL || window.webkitURL || URL);
-    const { fileObj } = this;
+    const { dataStack } = this;
+    const { thisURL, fileObj } = dataStack;
 
     if (fileObj.value) { // proceed ONLY when a file is selected
       const targetfile = fileObj.files[0];
-      if (targetfile.type.indexOf('audio') !== -1) { // accepts only audio files
+
+      if (targetfile.type.indexOf('audio') === -1) {
+        this.showMessage('NOT_AUDIO_FILE');
+      } else {
         const newAudioData = {
           src: thisURL.createObjectURL(targetfile),
           name: targetfile.name,
@@ -93,20 +98,20 @@ export class App extends Component {
 
         thisURL.revokeObjectURL(targetfile);
 
-        // execute action stored by [updateTracks()] before [this.fileObj] was clicked
-        // if action was "delete", then it had already been executed by [updateTracks()]
-
-        if (this.INFO.action === 'replace' || 'add_next' || 'add_first' || 'add_last') {
+        // execute this.dataStack.pendingAction
+        //   -> 'delete' would have been executed in updateTracks()
+        const { pendingAction } = dataStack;
+        if (pendingAction === 'replace' || 'add_next' || 'add_first' || 'add_last') {
           const copy = [...(this.state.tracks)];
-          const index = this.INFO.current_index;
+          const { pendingIndex } = dataStack;
 
-          switch (this.INFO.action) {
+          switch (pendingAction) {
             case 'replace':
-              copy.splice(index, 1, newAudioData);
+              copy.splice(pendingIndex, 1, newAudioData);
               break;
 
             case 'add_next':
-              copy.splice(index + 1, 0, newAudioData);
+              copy.splice(pendingIndex + 1, 0, newAudioData);
               break;
 
             case 'add_first':
@@ -123,8 +128,6 @@ export class App extends Component {
 
           this.setTracksReleaseScreen(copy);
         }
-      } else { // non-audio file is selected
-        this.showMessage('NOT_AUDIO_FILE');
       }
     }
 
@@ -146,7 +149,7 @@ export class App extends Component {
 
   clearTracks() {
     this.setTracksReleaseScreen([]);
-    this.fileObj.value = null;
+    this.dataStack.fileObj.value = null;
   }
 
   showMessage(_message) {
@@ -165,7 +168,7 @@ export class App extends Component {
 
   // unmount <MessageFrame/> and re-enable audio operations
   reSelectAudio() {
-    this.fileObj.click();
+    this.dataStack.fileObj.click();
   }
 
   render() {
@@ -216,7 +219,7 @@ export class App extends Component {
           type="file"
           accept="audio/*"
           style={{ display: 'none' }}
-          ref={(_file) => { this.fileObj = _file; }}
+          ref={(_file) => { this.dataStack.fileObj = _file; }}
           onChange={this.selectAudioFile}
         />
 
