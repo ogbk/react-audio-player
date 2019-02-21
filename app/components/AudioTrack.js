@@ -53,6 +53,7 @@ export class AudioTrack extends Component {
       name: propsAudioName,
       index: propsAudioIndex,
       updateTracks: propsUpdateTracks,
+      screenEnabled: propsScreenEnabled,
     } = this.props;
 
     const {
@@ -118,8 +119,11 @@ export class AudioTrack extends Component {
           alt="Add next track"
           title="Add next track"
           onClick={() => {
-            propsUpdateTracks('add_next', propsAudioIndex);
+            if (propsScreenEnabled) {
+              propsUpdateTracks('add_next', propsAudioIndex);
+            }
           }}
+
         />
 
         <img
@@ -128,7 +132,9 @@ export class AudioTrack extends Component {
           alt="Delete track"
           title="Delete track"
           onClick={() => {
-            propsUpdateTracks('delete', propsAudioIndex);
+            if (propsScreenEnabled) {
+              propsUpdateTracks('delete', propsAudioIndex);
+            }
           }}
         />
 
@@ -138,7 +144,9 @@ export class AudioTrack extends Component {
           alt="Replace track"
           title="Replace track"
           onClick={() => {
-            propsUpdateTracks('replace', propsAudioIndex);
+            if (propsScreenEnabled) {
+              propsUpdateTracks('replace', propsAudioIndex);
+            }
           }}
         />
       </div>
@@ -149,9 +157,10 @@ export class AudioTrack extends Component {
 AudioTrack.propTypes = {
   src: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  changePlayingAudio: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
+  screenEnabled: PropTypes.bool.isRequired,
   updateTracks: PropTypes.func.isRequired,
+  changePlayingAudio: PropTypes.func.isRequired,
   playPrev: PropTypes.func.isRequired,
   playNext: PropTypes.func.isRequired,
 };

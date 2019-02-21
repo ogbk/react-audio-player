@@ -184,6 +184,7 @@ export class App extends Component {
                 name={name}
                 index={idx}
                 key={`${keyIndex}`}
+                screenEnabled={stateScreenEnabled}
                 updateTracks={this.updateTracks}
                 changePlayingAudio={this.changePlayingAudio}
                 playPrev={this.playPrev}
