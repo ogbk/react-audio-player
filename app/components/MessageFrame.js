@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export class MessageFrame extends Component {
-  componentDidMount() { this.props.enableScreen(false); }
+  componentDidMount() { }
 
   render() {
     const {
@@ -10,7 +10,7 @@ export class MessageFrame extends Component {
       updateTracks: propsUpdateTracks,
       reSelectAudio: propsReSelectAudio,
       clearTracks: propsClearTracks,
-      enableScreen: propsEnableScreen,
+      showScreen: propsShowScreen,
     } = this.props;
 
     let toRender = null;
@@ -72,7 +72,7 @@ export class MessageFrame extends Component {
 
         <div
           className="frame-abort click"
-          onClick={() => { propsEnableScreen(true); }}
+          onClick={() => { propsShowScreen(true); }}
         >
           <span>ABORT</span>
         </div>
@@ -86,5 +86,5 @@ MessageFrame.propTypes = {
   updateTracks: PropTypes.func.isRequired,
   clearTracks: PropTypes.func.isRequired,
   reSelectAudio: PropTypes.func.isRequired,
-  enableScreen: PropTypes.func.isRequired,
+  showScreen: PropTypes.func.isRequired,
 };

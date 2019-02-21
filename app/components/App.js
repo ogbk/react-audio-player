@@ -21,16 +21,26 @@ export class App extends Component {
       playingAudio: null,
     };
 
-    this.enableScreen = this.enableScreen.bind(this);
+    this.playPrev = this.playPrev.bind(this);
+    this.playNext = this.playNext.bind(this);
+    this.showMessage = this.showMessage.bind(this);
+    this.showScreen = this.showScreen.bind(this);
+    this.setTracksReleaseScreen = this.setTracksReleaseScreen.bind(this);
     this.reSelectAudio = this.reSelectAudio.bind(this);
     this.addNewTrack = this.addNewTrack.bind(this);
     this.confirmClearTracks = this.confirmClearTracks.bind(this);
     this.clearTracks = this.clearTracks.bind(this);
     this.updateTracks = this.updateTracks.bind(this);
-    this.playPrev = this.playPrev.bind(this);
-    this.playNext = this.playNext.bind(this);
     this.changePlayingAudio = this.changePlayingAudio.bind(this);
     this.selectAudioFile = this.selectAudioFile.bind(this);
+  }
+
+  setTracksReleaseScreen(_tracks) {
+    this.setState({
+      displayMessage: false,
+      screenEnabled: true,
+      tracks: _tracks,
+    });
   }
 
   // play previous track or last track (if _track is first in list)
@@ -47,12 +57,10 @@ export class App extends Component {
 
   // execute _action (delete || replace || add_next) on track[_idx]
   updateTracks(_action, _idx) {
-    this.enableScreen(true);
-
     if (_action === 'delete') {
       const copy = [...(this.state.tracks)];
       copy.splice(_idx, 1);
-      this.setState({ tracks: copy });
+      this.setTracksReleaseScreen(copy);
     } else {
       this.INFO.current_index = _idx;
       this.INFO.action = _action;
@@ -113,10 +121,10 @@ export class App extends Component {
               break;
           }
 
-          this.setState({ tracks: copy });
+          this.setTracksReleaseScreen(copy);
         }
       } else { // non-audio file is selected
-        this.setState({ displayMessage: 'NOT_AUDIO_FILE' });
+        this.showMessage('NOT_AUDIO_FILE');
       }
     }
 
@@ -126,35 +134,37 @@ export class App extends Component {
 
   addNewTrack() {
     if (this.state.tracks.length) {
-      this.setState({ displayMessage: 'NEWTRACK_FIRST_OR_LAST' });
+      this.showMessage('NEWTRACK_FIRST_OR_LAST');
     } else {
       this.updateTracks('add_last', null);
     }
   }
 
   confirmClearTracks() {
-    this.setState({ displayMessage: 'CONFIRM_CLEAR_TRACKS' });
+    this.showMessage('CONFIRM_CLEAR_TRACKS');
   }
 
   clearTracks() {
-    this.setState({ tracks: [] });
+    this.setTracksReleaseScreen([]);
     this.fileObj.value = null;
   }
 
-  enableScreen(bool) {
-    if (bool) { // unmount <MessageFrame/> and re-enable main audio operations
-      this.setState({
-        displayMessage: false,
-        screenEnabled: true,
-      });
-    } else { // disable main audio operations
-      this.setState({ screenEnabled: false });
-    }
+  showMessage(_message) {
+    this.setState({
+      displayMessage: _message,
+      screenEnabled: false,
+    });
+  }
+
+  showScreen() {
+    this.setState({
+      displayMessage: false,
+      screenEnabled: true,
+    });
   }
 
   // unmount <MessageFrame/> and re-enable audio operations
   reSelectAudio() {
-    this.enableScreen(true);
     this.fileObj.click();
   }
 
@@ -216,7 +226,7 @@ export class App extends Component {
             clearTracks={this.clearTracks}
             reSelectAudio={this.reSelectAudio}
             displayMessage={stateDisplayMessage}
-            enableScreen={this.enableScreen}
+            showScreen={this.showScreen}
           />
         }
 
