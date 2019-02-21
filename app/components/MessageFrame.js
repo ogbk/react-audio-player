@@ -9,6 +9,7 @@ export class MessageFrame extends Component {
       displayMessage: propsDisplayMessage,
       updateTracks: propsUpdateTracks,
       reSelectAudio: propsReSelectAudio,
+      clearTracks: propsClearTracks,
     } = this.props;
 
     let toRender = null;
@@ -29,6 +30,19 @@ export class MessageFrame extends Component {
               onClick={() => { propsUpdateTracks('add_last', null); }}
             >
               <span>Save as last track</span>
+            </div>
+          </div>
+        );
+        break;
+
+      case 'CONFIRM_CLEAR_TRACKS':
+        toRender = (
+          <div className="upload-options">
+            <div
+              className="frame-option click"
+              onClick={() => { propsClearTracks(); }}
+            >
+              <span>Clearing tracks. Continue?</span>
             </div>
           </div>
         );
@@ -58,6 +72,7 @@ export class MessageFrame extends Component {
 MessageFrame.propTypes = {
   displayMessage: PropTypes.string.isRequired,
   updateTracks: PropTypes.func.isRequired,
+  clearTracks: PropTypes.func.isRequired,
   reSelectAudio: PropTypes.func.isRequired,
   enableScreen: PropTypes.func.isRequired,
 };

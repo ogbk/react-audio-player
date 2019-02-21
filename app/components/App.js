@@ -24,6 +24,7 @@ export class App extends Component {
     this.enableScreen = this.enableScreen.bind(this);
     this.reSelectAudio = this.reSelectAudio.bind(this);
     this.addNewTrack = this.addNewTrack.bind(this);
+    this.confirmClearTracks = this.confirmClearTracks.bind(this);
     this.clearTracks = this.clearTracks.bind(this);
     this.updateTracks = this.updateTracks.bind(this);
     this.playPrev = this.playPrev.bind(this);
@@ -131,6 +132,10 @@ export class App extends Component {
     }
   }
 
+  confirmClearTracks() {
+    this.setState({ displayMessage: 'CONFIRM_CLEAR_TRACKS' });
+  }
+
   clearTracks() {
     this.setState({ tracks: [] });
     this.fileObj.value = null;
@@ -180,19 +185,19 @@ export class App extends Component {
 
         <div className="actions">
           <img
-            className={(stateScreenEnabled) ? 'new click' : 'new no-click'}
+            className={(stateScreenEnabled) ? 'new click' : 'hide'}
             src="img/new.png"
-            alt={(stateScreenEnabled) ? 'New track' : ''}
-            title={(stateScreenEnabled) ? 'New track' : ''}
-            onClick={() => { if (stateScreenEnabled) { this.addNewTrack(); } }}
+            alt={'New track'}
+            title={'New track'}
+            onClick={this.addNewTrack}
           />
 
           <img
-            className={(stateScreenEnabled) ? 'clear click' : 'clear no-click'}
+            className={(stateScreenEnabled) ? 'clear click' : 'hide'}
             src="img/clear.png"
-            alt={(stateScreenEnabled) ? 'Clear tracks' : ''}
-            title={(stateScreenEnabled) ? 'Clear tracks' : ''}
-            onClick={() => { if (stateScreenEnabled) { this.clearTracks(); } }}
+            alt={'Clear tracks'}
+            title={'Clear tracks'}
+            onClick={this.confirmClearTracks}
           />
         </div>
 
@@ -210,6 +215,7 @@ export class App extends Component {
           <div>
             <MessageFrame
               updateTracks={this.updateTracks}
+              clearTracks={this.clearTracks}
               reSelectAudio={this.reSelectAudio}
               displayMessage={stateDisplayMessage}
               enableScreen={this.enableScreen}
