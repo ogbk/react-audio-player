@@ -123,7 +123,6 @@ export class AudioTrack extends Component {
               propsUpdateTracks('add_next', propsAudioIndex);
             }
           }}
-
         />
 
         <img

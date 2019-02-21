@@ -7,9 +7,9 @@ export class App extends Component {
     super();
 
     this.state = {
-      screenEnabled: true, // to (re-)enable actions on tracks
+      screenEnabled: true,
       displayMessage: null,
-      tracks: [], // list of added tracks
+      tracks: [],
     };
 
     // dataStack - detached from state, doesn't trigger UI changes
@@ -55,7 +55,8 @@ export class App extends Component {
     next.children[3].children[1].play();
   }
 
-  // execute _action (delete || replace || add_next) on track[_idx]
+  // execute _action (delete | replace | add_next | add_first | add_last )
+  // _idx => track index {for delete | replace | add_next} OR null
   updateTracks(_action, _idx) {
     if (_action === 'delete') {
       const copy = [...(this.state.tracks)];
@@ -89,7 +90,7 @@ export class App extends Component {
 
       if (targetfile.type.indexOf('audio') === -1) {
         this.showMessage('NOT_AUDIO_FILE');
-      } else {
+      } else { // ONLY audio files
         const newAudioData = {
           src: thisURL.createObjectURL(targetfile),
           name: targetfile.name,
@@ -99,7 +100,7 @@ export class App extends Component {
         thisURL.revokeObjectURL(targetfile);
 
         // execute this.dataStack.pendingAction
-        //   -> 'delete' would have been executed in updateTracks()
+        //   -> 'delete' must have been executed in updateTracks()
         const { pendingAction } = dataStack;
         if (pendingAction === 'replace' || 'add_next' || 'add_first' || 'add_last') {
           const copy = [...(this.state.tracks)];
@@ -166,7 +167,6 @@ export class App extends Component {
     });
   }
 
-  // unmount <MessageFrame/> and re-enable audio operations
   reSelectAudio() {
     this.dataStack.fileObj.click();
   }
