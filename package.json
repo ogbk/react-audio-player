@@ -7,7 +7,8 @@
     "dev": "webpack -d --watch",
     "prod": "webpack -p",
     "sass-lint": "sass-lint app/sass/styles.sass --verbose -q",
-    "eslint": "eslint app/"
+    "eslint": "eslint app/",
+    "flow": "flow"
   },
   "author": "",
   "license": "ISC",
@@ -29,13 +30,16 @@
     "webpack": "^3.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.3",
+    "babel-preset-flow": "^6.23.0",
     "eslint": "^4.19.1",
     "eslint-config-airbnb": "^15.0.1",
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.8.2",
     "eslint-watch": "^3.1.5",
+    "flow-bin": "^0.93.0",
     "sass-lint": "^1.10.2"
   }
 }

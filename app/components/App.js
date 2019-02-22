@@ -1,8 +1,47 @@
+// @flow
+
 import React, { Component } from 'react';
 import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
 
-export class App extends Component {
+type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE' | null;
+type Action = 'delete' | 'replace' | 'add_first' | 'add_last' | 'add_next' | null;
+
+type AudioData = {
+  src: string,
+  name: string,
+  keyIndex: number,
+};
+
+type DataStack = {
+  pendingAction: Action,
+  pendingIndex: number,
+  playingAudio: HTMLAudioElement | null,
+  thisURL: any,
+  fileObj: any,
+};
+
+type State = {
+  screenEnabled: boolean,
+  displayMessage: DisplayMessage,
+  tracks: Array<AudioData>,
+}
+
+export class App extends Component<{}, State> {
+  dataStack: DataStack;
+  playPrev: (any) => void;
+  playNext: (any) => void;
+  showMessage: (DisplayMessage) => void;
+  showScreen: () => void;
+  setTracksReleaseScreen: (Array<AudioData>) => void;
+  reSelectAudio: () => void;
+  addNewTrack: () => void;
+  confirmClearTracks: () => void;
+  clearTracks: () => void;
+  updateTracks: (Action, number) => void;
+  changePlayingAudio: (any) => void;
+  selectAudioFile: () => void;
+
   constructor() {
     super();
 
@@ -15,7 +54,7 @@ export class App extends Component {
     // dataStack - detached from state, doesn't trigger UI changes
     this.dataStack = {
       pendingAction: null, // delete | replace | add_first | add_last | add_next
-      pendingIndex: null,
+      pendingIndex: -2,
       playingAudio: null,
       thisURL: (window.URL || window.webkitURL || URL),
       fileObj: null,
@@ -35,29 +74,29 @@ export class App extends Component {
     this.selectAudioFile = this.selectAudioFile.bind(this);
   }
 
-  setTracksReleaseScreen(_tracks) {
+  setTracksReleaseScreen(_tracks: Array<AudioData>): void {
     this.setState({
-      displayMessage: false,
+      displayMessage: null,
       screenEnabled: true,
       tracks: _tracks,
     });
   }
 
   // play previous track or last track (if _track is first in list)
-  playPrev(_track) {
+  playPrev(_track: any): void {
     const prev = (_track.previousElementSibling || _track.parentNode.lastElementChild);
     prev.children[3].children[1].play();
   }
 
   // play next track or first track (if _track is last in list)
-  playNext(_track) {
+  playNext(_track: any): void {
     const next = (_track.nextElementSibling || _track.parentNode.firstElementChild);
     next.children[3].children[1].play();
   }
 
   // execute _action (delete | replace | add_next | add_first | add_last )
   // _idx => track index {for delete | replace | add_next} OR null
-  updateTracks(_action, _idx) {
+  updateTracks(_action: Action, _idx: number): void {
     if (_action === 'delete') {
       const copy = [...(this.state.tracks)];
       copy.splice(_idx, 1);
@@ -70,7 +109,7 @@ export class App extends Component {
     }
   }
 
-  changePlayingAudio(_audio) {
+  changePlayingAudio(_audio: any): void {
     const { dataStack } = this;
     if (_audio !== dataStack.playingAudio) {
       if (dataStack.playingAudio) {
@@ -81,7 +120,7 @@ export class App extends Component {
   }
 
   // triggered by this.dataStack.fileObj.click()
-  selectAudioFile() {
+  selectAudioFile(): void {
     const { dataStack } = this;
     const { thisURL, fileObj } = dataStack;
 
@@ -136,38 +175,38 @@ export class App extends Component {
   }
 
 
-  addNewTrack() {
+  addNewTrack(): void {
     if (this.state.tracks.length) {
       this.showMessage('NEWTRACK_FIRST_OR_LAST');
     } else {
-      this.updateTracks('add_last', null);
+      this.updateTracks('add_last', -2);
     }
   }
 
-  confirmClearTracks() {
+  confirmClearTracks(): void {
     this.showMessage('CONFIRM_CLEAR_TRACKS');
   }
 
-  clearTracks() {
+  clearTracks(): void {
     this.setTracksReleaseScreen([]);
     this.dataStack.fileObj.value = null;
   }
 
-  showMessage(_message) {
+  showMessage(_message: DisplayMessage): void {
     this.setState({
       displayMessage: _message,
       screenEnabled: false,
     });
   }
 
-  showScreen() {
+  showScreen(): void {
     this.setState({
-      displayMessage: false,
+      displayMessage: null,
       screenEnabled: true,
     });
   }
 
-  reSelectAudio() {
+  reSelectAudio(): void {
     this.dataStack.fileObj.click();
   }
 

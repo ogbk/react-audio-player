@@ -21,7 +21,8 @@
     "linebreak-style":"off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/no-did-mount-set-state": ["off", "allow-in-func"],
-    "react/no-did-update-set-state": "off"
+    "react/no-did-update-set-state": "off",
+    "react/sort-comp": "off"
   },
   "plugins": [
     "react"
