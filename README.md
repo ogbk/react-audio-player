@@ -24,9 +24,9 @@ App is linted (eslint and sass-lint) and built with flow.js static typechecking.
 
 - App => main component
 	It contains:
-	- uploaded tracks (<AudioTrack/> components)
+	- uploaded tracks (AudioTrack components)
 
-	- [upload button]  => loads an audio track (<AudioTrack/>)
+	- [upload button]  => loads an audio track (AudioTrack)
 		When selecting successive tracks, you can choose to save each one as either first or last in list
 
 	- [clear button] => clear list of selected tracks.
@@ -42,7 +42,7 @@ App is linted (eslint and sass-lint) and built with flow.js static typechecking.
 - AudioTrack => selected audio track.
   It contains:
 	- name of track
-	- html <audio/> element for the selected file.
+	- html audio element for the selected file.
 	- buttons for the following actions:
 		- play previous track
 		- play next track
@@ -51,7 +51,7 @@ App is linted (eslint and sass-lint) and built with flow.js static typechecking.
 		- delete track
 		- replace track with new one
 
-	All <AudioTrack/> operations can be performed while a selected track is playing.
+	All AudioTrack operations can be performed while a selected track is playing.
 
 
 ## Linting
