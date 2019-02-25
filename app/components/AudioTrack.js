@@ -1,8 +1,36 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+// @flow
 
-export class AudioTrack extends Component {
-  constructor(props) {
+import React, { Component } from 'react';
+import type { Action } from './App';
+
+type Props = {
+  src: string,
+  name: string,
+  index: number,
+  screenEnabled: boolean,
+  updateTracks: (Action, ?number) => void,
+  changePlayingAudio: (any) => void,
+  playPrev: (any) => void,
+  playNext: (any) => void,
+};
+
+type State = {
+  isPlaying: boolean,
+  togglePlaySrc: 'img/paused.png' | 'img/playing.png',
+  togglePlayTitle : 'PLAY' | 'PAUSE',
+};
+
+export class AudioTrack extends Component<Props, State> {
+  audio: any;
+  track: any;
+  togglePlayBtn: any;
+  playPrevBtn: any;
+  playNextBtn: any;
+  togglePlayPause: () => void;
+  handleNotPlaying: () => void;
+  handlePlaying: () => void;
+
+  constructor(props: Props) {
     super(props);
 
     this.state = {
@@ -16,7 +44,7 @@ export class AudioTrack extends Component {
     this.handlePlaying = this.handlePlaying.bind(this);
   }
 
-  togglePlayPause() {
+  togglePlayPause(): void {
     const { audio } = this;
 
     if (audio.ended || audio.paused) {
@@ -26,7 +54,7 @@ export class AudioTrack extends Component {
     }
   }
 
-  handleNotPlaying() {
+  handleNotPlaying(): void {
     this.setState({
       isPlaying: false,
       togglePlaySrc: 'img/paused.png',
@@ -34,7 +62,7 @@ export class AudioTrack extends Component {
     });
   }
 
-  handlePlaying() {
+  handlePlaying(): void {
     this.setState({
       isPlaying: true,
       togglePlaySrc: 'img/playing.png',
@@ -120,7 +148,7 @@ export class AudioTrack extends Component {
           title="Add next track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('add_next', propsAudioIndex);
+              propsUpdateTracks('ADD_NEXT', propsAudioIndex);
             }
           }}
         />
@@ -132,7 +160,7 @@ export class AudioTrack extends Component {
           title="Delete track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('delete', propsAudioIndex);
+              propsUpdateTracks('DELETE_THIS', propsAudioIndex);
             }
           }}
         />
@@ -144,7 +172,7 @@ export class AudioTrack extends Component {
           title="Replace track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('replace', propsAudioIndex);
+              propsUpdateTracks('REPLACE_THIS', propsAudioIndex);
             }
           }}
         />
@@ -152,14 +180,3 @@ export class AudioTrack extends Component {
     );
   }
 }
-
-AudioTrack.propTypes = {
-  src: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  index: PropTypes.number.isRequired,
-  screenEnabled: PropTypes.bool.isRequired,
-  updateTracks: PropTypes.func.isRequired,
-  changePlayingAudio: PropTypes.func.isRequired,
-  playPrev: PropTypes.func.isRequired,
-  playNext: PropTypes.func.isRequired,
-};

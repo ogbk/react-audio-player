@@ -4,8 +4,8 @@ import React, { Component } from 'react';
 import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
 
-type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE' | null;
-type Action = 'delete' | 'replace' | 'add_first' | 'add_last' | 'add_next' | null;
+export type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE';
+export type Action = 'DELETE_THIS' | 'REPLACE_THIS' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT';
 
 type AudioData = {
   src: string,
@@ -14,7 +14,7 @@ type AudioData = {
 };
 
 type DataStack = {
-  pendingAction: Action,
+  pendingAction: ?Action,
   pendingIndex: number,
   playingAudio: HTMLAudioElement | null,
   thisURL: any,
@@ -23,7 +23,7 @@ type DataStack = {
 
 type State = {
   screenEnabled: boolean,
-  displayMessage: DisplayMessage,
+  displayMessage: ?DisplayMessage,
   tracks: Array<AudioData>,
 }
 
@@ -38,7 +38,7 @@ export class App extends Component<{}, State> {
   addNewTrack: () => void;
   confirmClearTracks: () => void;
   clearTracks: () => void;
-  updateTracks: (Action, number) => void;
+  updateTracks: (Action, ?number) => void;
   changePlayingAudio: (any) => void;
   selectAudioFile: () => void;
 
@@ -47,13 +47,13 @@ export class App extends Component<{}, State> {
 
     this.state = {
       screenEnabled: true,
-      displayMessage: null,
+      displayMessage: undefined,
       tracks: [],
     };
 
     // dataStack - detached from state, doesn't trigger UI changes
     this.dataStack = {
-      pendingAction: null, // delete | replace | add_first | add_last | add_next
+      pendingAction: undefined,
       pendingIndex: -2,
       playingAudio: null,
       thisURL: (window.URL || window.webkitURL || URL),
@@ -76,7 +76,7 @@ export class App extends Component<{}, State> {
 
   setTracksReleaseScreen(_tracks: Array<AudioData>): void {
     this.setState({
-      displayMessage: null,
+      displayMessage: undefined,
       screenEnabled: true,
       tracks: _tracks,
     });
@@ -94,10 +94,10 @@ export class App extends Component<{}, State> {
     next.children[3].children[1].play();
   }
 
-  // execute _action (delete | replace | add_next | add_first | add_last )
-  // _idx => track index {for delete | replace | add_next} OR null
-  updateTracks(_action: Action, _idx: number): void {
-    if (_action === 'delete') {
+  // execute _action
+  // _idx => track index {for DELETE_THIS | REPLACE_THIS | ADD_NEXT} OR null
+  updateTracks(_action: Action, _idx: number = -2): void {
+    if (_action === 'DELETE_THIS') {
       const copy = [...(this.state.tracks)];
       copy.splice(_idx, 1);
       this.setTracksReleaseScreen(copy);
@@ -139,26 +139,26 @@ export class App extends Component<{}, State> {
         thisURL.revokeObjectURL(targetfile);
 
         // execute this.dataStack.pendingAction
-        //   -> 'delete' must have been executed in updateTracks()
+        //   -> 'DELETE_THIS' must have been executed in updateTracks()
         const { pendingAction } = dataStack;
-        if (pendingAction === 'replace' || 'add_next' || 'add_first' || 'add_last') {
+        if (pendingAction === 'REPLACE_THIS' || 'ADD_NEXT' || 'ADD_FIRST' || 'ADD_LAST') {
           const copy = [...(this.state.tracks)];
           const { pendingIndex } = dataStack;
 
           switch (pendingAction) {
-            case 'replace':
+            case 'REPLACE_THIS':
               copy.splice(pendingIndex, 1, newAudioData);
               break;
 
-            case 'add_next':
+            case 'ADD_NEXT':
               copy.splice(pendingIndex + 1, 0, newAudioData);
               break;
 
-            case 'add_first':
+            case 'ADD_FIRST':
               copy.unshift(newAudioData);
               break;
 
-            case 'add_last':
+            case 'ADD_LAST':
               copy.push(newAudioData);
               break;
 
@@ -179,7 +179,7 @@ export class App extends Component<{}, State> {
     if (this.state.tracks.length) {
       this.showMessage('NEWTRACK_FIRST_OR_LAST');
     } else {
-      this.updateTracks('add_last', -2);
+      this.updateTracks('ADD_LAST');
     }
   }
 
@@ -201,7 +201,7 @@ export class App extends Component<{}, State> {
 
   showScreen(): void {
     this.setState({
-      displayMessage: null,
+      displayMessage: undefined,
       screenEnabled: true,
     });
   }

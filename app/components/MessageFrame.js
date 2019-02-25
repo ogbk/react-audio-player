@@ -1,5 +1,15 @@
+// @flow
+
 import React from 'react';
-import PropTypes from 'prop-types';
+import type { Action, DisplayMessage } from './App';
+
+type Props = {
+  displayMessage: DisplayMessage,
+  updateTracks: (Action, ?number) => void,
+  reSelectAudio: () => void,
+  clearTracks: () => void,
+  showScreen: (boolean) => void,
+};
 
 export const MessageFrame = ({
   displayMessage,
@@ -7,7 +17,7 @@ export const MessageFrame = ({
   reSelectAudio,
   clearTracks,
   showScreen,
-}) => {
+}: Props) => {
   let toRender = null;
 
   switch (displayMessage) {
@@ -16,14 +26,14 @@ export const MessageFrame = ({
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { updateTracks('add_first', null); }}
+            onClick={() => { updateTracks('ADD_FIRST'); }}
           >
             <span>Save as first track</span>
           </div>
 
           <div
             className="frame-option click"
-            onClick={() => { updateTracks('add_last', null); }}
+            onClick={() => { updateTracks('ADD_LAST'); }}
           >
             <span>Save as last track</span>
           </div>
@@ -73,13 +83,4 @@ export const MessageFrame = ({
       </div>
     </div>
   );
-};
-
-
-MessageFrame.propTypes = {
-  displayMessage: PropTypes.string.isRequired,
-  updateTracks: PropTypes.func.isRequired,
-  clearTracks: PropTypes.func.isRequired,
-  reSelectAudio: PropTypes.func.isRequired,
-  showScreen: PropTypes.func.isRequired,
 };
