@@ -1,6 +1,7 @@
 # react-audio-player
 
-React app that loads and plays audio files on user's pc
+React app that loads and plays audio files on user's pc.
+App is linted (eslint and sass-lint) and built with flow.js static typechecking.
 
 ## Running locally
 
@@ -13,42 +14,54 @@ React app that loads and plays audio files on user's pc
 
 ## Functionality
 
-- loads and plays multiple audio tracks from user's computer
-- continuous audio stream : 
-	- when a track ends, the next one starts playing automatically
-	- if only one track is selected, playback restarts when track ends
+- uploads and plays only audio tracks from user's computer (checks MIME type during file upload)
+- app plays files one after the other : 
+	- when a track ends, the next one quickly starts playback
+	- when the last track ends, the first in list is played
 
 	
 ## Structure - app uses 3 components
 
 - App => main component
-	- [tracks] => div containing an array of loaded tracks (created as array of AudioTracks)
+	It contains:
+	- uploaded tracks (<AudioTrack/> components)
+
+	- [upload button]  => loads an audio track (<AudioTrack/>)
+		When selecting successive tracks, you can choose to save each one as either first or last in list
+
+	- [clear button] => clear list of selected tracks.
+		App will prompt confirmation before proceeding.
 	
-	- [new]  => loads an audio track (wrapped in AudioTrack component)
-		When loading successive tracks, you can choose to load track as either first or last in list
+- MessageFrame => mounted in one of 3 cases
+	- user selects a non audio file ==> prompts reselection
+	- user selects file when track list is not empty ==> lets you choose the position of the new file (either as first or last in list)
+	- user wants to clear selected tracks ==> prompts confirmation before proceeding
 
-	- [clear] => clear list of selected tracks
+	All 3 operations can be aborted by clicking the ABORT button.
 	
-- MessageFrame => mounted in one of 2 cases
-	- user selects file that's not audio ==> prompts reselection
-	- user selects file when track list isn't empty ==> prompts positioning of new file as either first or last in list
+- AudioTrack => selected audio track.
+  It contains:
+	- name of track
+	- html <audio/> element for the selected file.
+	- buttons for the following actions:
+		- play previous track
+		- play next track
+		- toggle play/pause operations
+		- upload new track and position it right after this one
+		- delete track
+		- replace track with new one
 
-	Both operations can be aborted - an abort div is rendered and enabled whenever MessageFrame is mounted
-
-- AudioTrack => selected audio track with the following features
-	- name of selected track is displayed
-	- play previous track
-	- play or pause this track
-	- play next track
-	- add successive track after this
-	- delete this track
-	- replace this track with another
-
-	
-All operations can be performed while a selected track is playing.
+	All <AudioTrack/> operations can be performed while a selected track is playing.
 
 
 ## Linting
 
 - ESLint `npm run eslint`
 - Sass lint `npm run sass-lint`
+
+
+## Static typechecking with Flow
+
+- Stop flow server `npm run flow stop`
+- Start flow server `npm run flow start`
+- Run flow `npm run flow status`
