@@ -7,7 +7,6 @@ type Props = {
   displayMessage: DisplayMessage,
   updateTracks: (Action, ?number) => void,
   reSelectAudio: () => void,
-  clearTracks: () => void,
   showScreen: (boolean) => void,
 };
 
@@ -15,7 +14,6 @@ export const MessageFrame = ({
   displayMessage,
   updateTracks,
   reSelectAudio,
-  clearTracks,
   showScreen,
 }: Props) => {
   let toRender = null;
@@ -46,7 +44,7 @@ export const MessageFrame = ({
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { clearTracks(); }}
+            onClick={() => { updateTracks('CLEAR_TRACKS'); }}
           >
             <span>Clearing tracks. Continue?</span>
           </div>
@@ -59,7 +57,7 @@ export const MessageFrame = ({
         <div className="audio-error">
           <div
             className="frame-option click"
-            onClick={() => { reSelectAudio(); }}
+            onClick={reSelectAudio}
           >
             <span>Please select only audio files</span>
           </div>

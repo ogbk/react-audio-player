@@ -5,7 +5,7 @@ import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
 
 export type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE';
-export type Action = 'DELETE_THIS' | 'REPLACE_THIS' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT';
+export type Action = 'DELETE_THIS' | 'REPLACE_THIS' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT' | 'CLEAR_TRACKS';
 
 type AudioData = {
   src: string,
@@ -37,7 +37,6 @@ export class App extends Component<{}, State> {
   reSelectAudio: () => void;
   addNewTrack: () => void;
   confirmClearTracks: () => void;
-  clearTracks: () => void;
   updateTracks: (Action, ?number) => void;
   changePlayingAudio: (any) => void;
   selectAudioFile: () => void;
@@ -68,7 +67,6 @@ export class App extends Component<{}, State> {
     this.reSelectAudio = this.reSelectAudio.bind(this);
     this.addNewTrack = this.addNewTrack.bind(this);
     this.confirmClearTracks = this.confirmClearTracks.bind(this);
-    this.clearTracks = this.clearTracks.bind(this);
     this.updateTracks = this.updateTracks.bind(this);
     this.changePlayingAudio = this.changePlayingAudio.bind(this);
     this.selectAudioFile = this.selectAudioFile.bind(this);
@@ -95,12 +93,15 @@ export class App extends Component<{}, State> {
   }
 
   // execute _action
-  // _idx => track index {for DELETE_THIS | REPLACE_THIS | ADD_NEXT} OR null
+  // _idx => track index {ONLY for DELETE_THIS | REPLACE_THIS | ADD_NEXT} OR null
   updateTracks(_action: Action, _idx: number = -2): void {
     if (_action === 'DELETE_THIS') {
       const copy = [...(this.state.tracks)];
       copy.splice(_idx, 1);
       this.setTracksReleaseScreen(copy);
+    } else if (_action === 'CLEAR_TRACKS') {
+      this.setTracksReleaseScreen([]);
+      this.dataStack.fileObj.value = null;
     } else {
       const { dataStack } = this;
       dataStack.pendingIndex = _idx;
@@ -187,11 +188,6 @@ export class App extends Component<{}, State> {
     this.showMessage('CONFIRM_CLEAR_TRACKS');
   }
 
-  clearTracks(): void {
-    this.setTracksReleaseScreen([]);
-    this.dataStack.fileObj.value = null;
-  }
-
   showMessage(_message: DisplayMessage): void {
     this.setState({
       displayMessage: _message,
@@ -246,7 +242,7 @@ export class App extends Component<{}, State> {
           />
 
           <img
-            className={(stateScreenEnabled) ? 'clear click' : 'hide'}
+            className={(stateScreenEnabled && stateTracks.length) ? 'clear click' : 'hide'}
             src="img/clear.png"
             alt={'Clear tracks'}
             title={'Clear tracks'}
@@ -266,7 +262,6 @@ export class App extends Component<{}, State> {
           stateDisplayMessage &&
           <MessageFrame
             updateTracks={this.updateTracks}
-            clearTracks={this.clearTracks}
             reSelectAudio={this.reSelectAudio}
             displayMessage={stateDisplayMessage}
             showScreen={this.showScreen}
