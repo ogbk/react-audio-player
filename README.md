@@ -10,7 +10,7 @@ App is linted (eslint and sass-lint) and built with flow.js static typechecking.
 - `npm install`
 - run in dev mode: `npm run dev`
 - run in prod mode: `npm run prod`
-
+- open html file (with preferred browser): `public/index.html`
 
 ## Functionality
 
