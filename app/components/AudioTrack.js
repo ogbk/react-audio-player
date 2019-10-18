@@ -22,12 +22,19 @@ type State = {
 
 export class AudioTrack extends Component<Props, State> {
   audio: any;
+
   track: any;
+
   togglePlayBtn: any;
+
   playPrevBtn: any;
+
   playNextBtn: any;
+
   togglePlayPause: () => void;
+
   handleNotPlaying: () => void;
+
   handlePlaying: () => void;
 
   constructor(props: Props) {
@@ -69,8 +76,9 @@ export class AudioTrack extends Component<Props, State> {
       togglePlayTitle: 'PAUSE',
     });
 
+    const { changePlayingAudio } = this.props;
     const { audio } = this;
-    this.props.changePlayingAudio(audio);
+    changePlayingAudio(audio);
   }
 
   render() {
@@ -92,7 +100,7 @@ export class AudioTrack extends Component<Props, State> {
     return (
       <div className="track" ref={(_track) => { this.track = _track; }}>
         <img
-          className={'playback-option click'}
+          className="playback-option click"
           src="img/play_prev.png"
           alt="Play previous track"
           title="Play previous track"
@@ -104,7 +112,7 @@ export class AudioTrack extends Component<Props, State> {
         />
 
         <img
-          className={'playback-option click'}
+          className="playback-option click"
           src={statePlayBtnSrc}
           alt={statePlayBtnTitle}
           title={statePlayBtnTitle}
@@ -113,7 +121,7 @@ export class AudioTrack extends Component<Props, State> {
         />
 
         <img
-          className={'playback-option click'}
+          className="playback-option click"
           src="img/play_next.png"
           alt="Play next track"
           title="Play next track"
@@ -142,7 +150,7 @@ export class AudioTrack extends Component<Props, State> {
         </div>
 
         <img
-          className={'track-action click'}
+          className="track-action click"
           src="img/add_next.png"
           alt="Add next track"
           title="Add next track"
@@ -154,7 +162,7 @@ export class AudioTrack extends Component<Props, State> {
         />
 
         <img
-          className={'track-action click'}
+          className="track-action click"
           src="img/delete.png"
           alt="Delete track"
           title="Delete track"
@@ -166,7 +174,7 @@ export class AudioTrack extends Component<Props, State> {
         />
 
         <img
-          className={'track-action click'}
+          className="track-action click"
           src="img/change.png"
           alt="Replace track"
           title="Replace track"

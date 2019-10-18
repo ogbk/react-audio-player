@@ -29,16 +29,27 @@ type State = {
 
 export class App extends Component<{}, State> {
   dataStack: DataStack;
+
   playPrev: (any) => void;
+
   playNext: (any) => void;
+
   showMessage: (DisplayMessage) => void;
+
   showScreen: () => void;
+
   setTracksReleaseScreen: (Array<AudioData>) => void;
+
   reSelectAudio: () => void;
+
   addNewTrack: () => void;
+
   confirmClearTracks: () => void;
+
   updateTracks: (Action, ?number) => void;
+
   changePlayingAudio: (any) => void;
+
   selectAudioFile: () => void;
 
   constructor() {
@@ -95,8 +106,9 @@ export class App extends Component<{}, State> {
   // execute _action
   // _idx => track index {ONLY for DELETE_THIS | REPLACE_THIS | ADD_NEXT} OR null
   updateTracks(_action: Action, _idx: number = -2): void {
+    const { tracks } = this.state;
     if (_action === 'DELETE_THIS') {
-      const copy = [...(this.state.tracks)];
+      const copy = [...tracks];
       copy.splice(_idx, 1);
       this.setTracksReleaseScreen(copy);
     } else if (_action === 'CLEAR_TRACKS') {
@@ -124,6 +136,7 @@ export class App extends Component<{}, State> {
   selectAudioFile(): void {
     const { dataStack } = this;
     const { thisURL, fileObj } = dataStack;
+    const { tracks } = this.state;
 
     if (fileObj.value) { // proceed ONLY when a file is selected
       const targetfile = fileObj.files[0];
@@ -134,7 +147,7 @@ export class App extends Component<{}, State> {
         const newAudioData = {
           src: thisURL.createObjectURL(targetfile),
           name: targetfile.name,
-          keyIndex: this.state.tracks.length,
+          keyIndex: tracks.length,
         };
 
         thisURL.revokeObjectURL(targetfile);
@@ -143,7 +156,7 @@ export class App extends Component<{}, State> {
         //   -> 'DELETE_THIS' must have been executed in updateTracks()
         const { pendingAction } = dataStack;
         if (pendingAction === 'REPLACE_THIS' || 'ADD_NEXT' || 'ADD_FIRST' || 'ADD_LAST') {
-          const copy = [...(this.state.tracks)];
+          const copy = [...tracks];
           const { pendingIndex } = dataStack;
 
           switch (pendingAction) {
@@ -177,7 +190,9 @@ export class App extends Component<{}, State> {
 
 
   addNewTrack(): void {
-    if (this.state.tracks.length) {
+    const { tracks } = this.state;
+
+    if (tracks.length) {
       this.showMessage('NEWTRACK_FIRST_OR_LAST');
     } else {
       this.updateTracks('ADD_LAST');
@@ -236,16 +251,16 @@ export class App extends Component<{}, State> {
           <img
             className={(stateScreenEnabled) ? 'new click' : 'hide'}
             src="img/new.png"
-            alt={'New track'}
-            title={'New track'}
+            alt="New track"
+            title="New track"
             onClick={this.addNewTrack}
           />
 
           <img
             className={(stateScreenEnabled && stateTracks.length) ? 'clear click' : 'hide'}
             src="img/clear.png"
-            alt={'Clear tracks'}
-            title={'Clear tracks'}
+            alt="Clear tracks"
+            title="Clear tracks"
             onClick={this.confirmClearTracks}
           />
         </div>
@@ -259,13 +274,15 @@ export class App extends Component<{}, State> {
         />
 
         {
-          stateDisplayMessage &&
-          <MessageFrame
-            updateTracks={this.updateTracks}
-            reSelectAudio={this.reSelectAudio}
-            displayMessage={stateDisplayMessage}
-            showScreen={this.showScreen}
-          />
+          stateDisplayMessage
+          && (
+            <MessageFrame
+              updateTracks={this.updateTracks}
+              reSelectAudio={this.reSelectAudio}
+              displayMessage={stateDisplayMessage}
+              showScreen={this.showScreen}
+            />
+          )
         }
 
       </div>
