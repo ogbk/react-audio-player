@@ -150,7 +150,7 @@ export class AudioTrack extends Component<Props, State> {
         </div>
 
         <img
-          className="track-action click"
+          className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
           src="img/add_next.png"
           alt="Add next track"
           title="Add next track"
@@ -162,7 +162,7 @@ export class AudioTrack extends Component<Props, State> {
         />
 
         <img
-          className="track-action click"
+          className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
           src="img/delete.png"
           alt="Delete track"
           title="Delete track"
@@ -174,7 +174,7 @@ export class AudioTrack extends Component<Props, State> {
         />
 
         <img
-          className="track-action click"
+          className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
           src="img/change.png"
           alt="Replace track"
           title="Replace track"
