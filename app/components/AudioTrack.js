@@ -168,7 +168,7 @@ export class AudioTrack extends Component<Props, State> {
           title="Delete track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('DELETE_THIS', propsAudioIndex);
+              propsUpdateTracks('DELETE', propsAudioIndex);
             }
           }}
         />
@@ -180,7 +180,7 @@ export class AudioTrack extends Component<Props, State> {
           title="Replace track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('REPLACE_THIS', propsAudioIndex);
+              propsUpdateTracks('REPLACE', propsAudioIndex);
             }
           }}
         />

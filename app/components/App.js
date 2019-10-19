@@ -4,13 +4,21 @@ import React, { Component } from 'react';
 import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
 
+type DeleteActions = 'DELETE' | 'CLEAR_TRACKS';
+type AddActions = 'REPLACE' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT';
+export type Action = DeleteActions | AddActions;
+
 export type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE';
-export type Action = 'DELETE_THIS' | 'REPLACE_THIS' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT' | 'CLEAR_TRACKS';
 
 type AudioData = {
   src: string,
   name: string,
   keyIndex: number,
+};
+
+type AllActions = {
+  addActions: Array<AddActions>,
+  deleteActions: Array<DeleteActions>,
 };
 
 type DataStack = {
@@ -28,6 +36,8 @@ type State = {
 }
 
 export class App extends Component<{}, State> {
+  allActions: AllActions;
+
   dataStack: DataStack;
 
   playPrev: (any) => void;
@@ -61,7 +71,14 @@ export class App extends Component<{}, State> {
       tracks: [],
     };
 
-    // dataStack - detached from state, doesn't trigger UI changes
+    // ==== [ allAtions & dataStack]
+    //     detached from state, they don't trigger UI changes ====
+
+    this.allActions = {
+      deleteActions: ['DELETE', 'CLEAR_TRACKS'],
+      addActions: ['REPLACE', 'ADD_FIRST', 'ADD_LAST', 'ADD_NEXT'],
+    };
+
     this.dataStack = {
       pendingAction: undefined,
       pendingIndex: -2,
@@ -104,13 +121,13 @@ export class App extends Component<{}, State> {
   }
 
   // execute _action
-  // _idx => track index {ONLY for DELETE_THIS | REPLACE_THIS | ADD_NEXT} OR null
+  // _idx => track index {ONLY for DELETE | REPLACE | ADD_NEXT} OR null
   updateTracks(_action: Action, _idx: number = -2): void {
     const { tracks } = this.state;
-    if (_action === 'DELETE_THIS') {
-      const copy = [...tracks];
-      copy.splice(_idx, 1);
-      this.setTracksReleaseScreen(copy);
+    if (_action === 'DELETE') {
+      const newTracks = [...tracks];
+      newTracks.splice(_idx, 1);
+      this.setTracksReleaseScreen(newTracks);
     } else if (_action === 'CLEAR_TRACKS') {
       this.setTracksReleaseScreen([]);
       this.dataStack.fileObj.value = null;
@@ -134,7 +151,10 @@ export class App extends Component<{}, State> {
 
   // triggered by this.dataStack.fileObj.click()
   selectAudioFile(): void {
-    const { dataStack } = this;
+    const {
+      dataStack,
+      allActions: { addActions },
+    } = this;
     const { thisURL, fileObj } = dataStack;
     const { tracks } = this.state;
 
@@ -153,34 +173,35 @@ export class App extends Component<{}, State> {
         thisURL.revokeObjectURL(targetfile);
 
         // execute this.dataStack.pendingAction
-        //   -> 'DELETE_THIS' must have been executed in updateTracks()
+        //   -> 'DELETE' must have been executed in updateTracks()
         const { pendingAction } = dataStack;
-        if (pendingAction === 'REPLACE_THIS' || 'ADD_NEXT' || 'ADD_FIRST' || 'ADD_LAST') {
-          const copy = [...tracks];
+
+        if (addActions.includes(pendingAction)) {
+          const newTracks = [...tracks];
           const { pendingIndex } = dataStack;
 
           switch (pendingAction) {
-            case 'REPLACE_THIS':
-              copy.splice(pendingIndex, 1, newAudioData);
+            case 'REPLACE':
+              newTracks.splice(pendingIndex, 1, newAudioData);
               break;
 
             case 'ADD_NEXT':
-              copy.splice(pendingIndex + 1, 0, newAudioData);
+              newTracks.splice(pendingIndex + 1, 0, newAudioData);
               break;
 
             case 'ADD_FIRST':
-              copy.unshift(newAudioData);
+              newTracks.unshift(newAudioData);
               break;
 
             case 'ADD_LAST':
-              copy.push(newAudioData);
+              newTracks.push(newAudioData);
               break;
 
             default:
               break;
           }
 
-          this.setTracksReleaseScreen(copy);
+          this.setTracksReleaseScreen(newTracks);
         }
       }
     }
@@ -268,7 +289,7 @@ export class App extends Component<{}, State> {
         <input
           type="file"
           accept="audio/*"
-          style={{ display: 'none' }}
+          className="hide"
           ref={(_file) => { this.dataStack.fileObj = _file; }}
           onChange={this.selectAudioFile}
         />
