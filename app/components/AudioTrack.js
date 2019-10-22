@@ -32,6 +32,10 @@ export class AudioTrack extends Component<Props, State> {
 
   togglePlayPause: () => void;
 
+  handlePlayPrev: () => void;
+
+  handlePlayNext: () => void;
+
   handleNotPlaying: () => void;
 
   handlePlaying: () => void;
@@ -45,6 +49,8 @@ export class AudioTrack extends Component<Props, State> {
     };
 
     this.togglePlayPause = this.togglePlayPause.bind(this);
+    this.handlePlayPrev = this.handlePlayPrev.bind(this);
+    this.handlePlayNext = this.handlePlayNext.bind(this);
     this.handleNotPlaying = this.handleNotPlaying.bind(this);
     this.handlePlaying = this.handlePlaying.bind(this);
   }
@@ -57,6 +63,28 @@ export class AudioTrack extends Component<Props, State> {
     } else {
       audio.pause();
     }
+  }
+
+  handlePlayPrev(): void {
+    const {
+      audio,
+      track,
+      props: { playPrev },
+    } = this;
+
+    audio.pause();
+    playPrev(track);
+  }
+
+  handlePlayNext(): void {
+    const {
+      audio,
+      track,
+      props: { playNext },
+    } = this;
+
+    audio.pause();
+    playNext(track);
   }
 
   handleNotPlaying(): void {
@@ -82,7 +110,6 @@ export class AudioTrack extends Component<Props, State> {
 
   render() {
     const {
-      playPrev: propsPlayPrev,
       playNext: propsPlayNext,
       src: propsAudioSrc,
       name: propsAudioName,
@@ -103,10 +130,7 @@ export class AudioTrack extends Component<Props, State> {
           src="img/play_prev.png"
           alt="Play previous track"
           title="Play previous track"
-          onClick={() => {
-            this.audio.pause();
-            propsPlayPrev(this.track);
-          }}
+          onClick={this.handlePlayPrev}
           ref={(_playPrevBtn) => { this.playPrevBtn = _playPrevBtn; }}
         />
 
@@ -124,10 +148,7 @@ export class AudioTrack extends Component<Props, State> {
           src="img/play_next.png"
           alt="Play next track"
           title="Play next track"
-          onClick={() => {
-            this.audio.pause();
-            propsPlayNext(this.track);
-          }}
+          onClick={this.handlePlayNext}
           ref={(_playNextBtn) => { this.playNextBtn = _playNextBtn; }}
         />
 
@@ -141,9 +162,7 @@ export class AudioTrack extends Component<Props, State> {
             onPlay={this.handlePlaying}
             onPlaying={this.handlePlaying}
             onPause={this.handleNotPlaying}
-            onEnded={() => {
-              propsPlayNext(this.track);
-            }}
+            onEnded={() => { propsPlayNext(this.track); }}
             ref={(_audio) => { this.audio = _audio; }}
           />
         </div>
