@@ -128,10 +128,13 @@ export class App extends Component<{}, State> {
     const { tracks } = this.state;
 
     switch (action) {
-      case ('DELETE'):
+      case ('DELETE'): {
+        const newTracks = [...tracks];
+        newTracks.splice(trackIndex, 1);
         this.setTracksReleaseScreen(
-          ([...tracks]).splice(trackIndex, 1),
+          newTracks,
         );
+      }
         break;
 
       case ('CLEAR_TRACKS'):
@@ -151,6 +154,7 @@ export class App extends Component<{}, State> {
 
   changePlayingAudio(_audio: any): void {
     const { dataStack } = this;
+
     if (_audio !== dataStack.playingAudio) {
       if (dataStack.playingAudio) {
         dataStack.playingAudio.pause();
