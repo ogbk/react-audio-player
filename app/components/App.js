@@ -30,7 +30,6 @@ type DataStack = {
 };
 
 type State = {
-  screenEnabled: boolean,
   displayMessage: ?DisplayMessage,
   tracks: Array<AudioData>,
 }
@@ -66,7 +65,6 @@ export class App extends Component<{}, State> {
     super();
 
     this.state = {
-      screenEnabled: true,
       displayMessage: undefined,
       tracks: [],
     };
@@ -103,7 +101,6 @@ export class App extends Component<{}, State> {
   setTracksReleaseScreen(_tracks: Array<AudioData>): void {
     this.setState({
       displayMessage: undefined,
-      screenEnabled: true,
       tracks: _tracks,
     });
   }
@@ -240,14 +237,12 @@ export class App extends Component<{}, State> {
   showMessage(_message: DisplayMessage): void {
     this.setState({
       displayMessage: _message,
-      screenEnabled: false,
     });
   }
 
   showScreen(): void {
     this.setState({
       displayMessage: undefined,
-      screenEnabled: true,
     });
   }
 
@@ -258,9 +253,10 @@ export class App extends Component<{}, State> {
   render() {
     const {
       tracks: stateTracks,
-      screenEnabled: stateScreenEnabled,
       displayMessage: stateDisplayMessage,
     } = this.state;
+
+    const screenEnabled = !stateDisplayMessage;
 
     return (
       <div className="app">
@@ -272,7 +268,7 @@ export class App extends Component<{}, State> {
                 name={name}
                 index={idx}
                 key={`${keyIndex}`}
-                screenEnabled={stateScreenEnabled}
+                screenEnabled={screenEnabled}
                 runAction={this.runAction}
                 changePlayingAudio={this.changePlayingAudio}
                 playPrev={this.playPrev}
@@ -284,7 +280,7 @@ export class App extends Component<{}, State> {
 
         <div className="actions">
           <img
-            className={(stateScreenEnabled) ? 'new click' : 'hide'}
+            className={(screenEnabled) ? 'new click' : 'hide'}
             src="img/new.png"
             alt="New track"
             title="New track"
@@ -292,7 +288,7 @@ export class App extends Component<{}, State> {
           />
 
           <img
-            className={(stateScreenEnabled && stateTracks.length) ? 'clear click' : 'hide'}
+            className={(screenEnabled && stateTracks.length) ? 'clear click' : 'hide'}
             src="img/clear.png"
             alt="Clear tracks"
             title="Clear tracks"
