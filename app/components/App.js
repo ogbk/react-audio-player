@@ -120,22 +120,32 @@ export class App extends Component<{}, State> {
     next.children[3].children[1].play();
   }
 
-  // execute _action
-  // _idx => track index {ONLY for DELETE | REPLACE | ADD_NEXT} OR null
-  updateTracks(_action: Action, _idx: number = -2): void {
+  // trackIndex =>
+  //    null |
+  //    index of track that triggers this action (in case of DELETE | REPLACE | ADD_NEXT)
+
+  updateTracks(action: Action, trackIndex: number): void {
     const { tracks } = this.state;
-    if (_action === 'DELETE') {
-      const newTracks = [...tracks];
-      newTracks.splice(_idx, 1);
-      this.setTracksReleaseScreen(newTracks);
-    } else if (_action === 'CLEAR_TRACKS') {
-      this.setTracksReleaseScreen([]);
-      this.dataStack.fileObj.value = null;
-    } else {
-      const { dataStack } = this;
-      dataStack.pendingIndex = _idx;
-      dataStack.pendingAction = _action;
-      dataStack.fileObj.click(); // triggers selectAudioFile()
+
+    switch (action) {
+      case ('DELETE'):
+        this.setTracksReleaseScreen(
+          ([...tracks]).splice(trackIndex, 1),
+        );
+        break;
+
+      case ('CLEAR_TRACKS'):
+        this.setTracksReleaseScreen([]);
+        this.dataStack.fileObj.value = null;
+        break;
+
+      default: {
+        const { dataStack } = this;
+        dataStack.pendingIndex = trackIndex;
+        dataStack.pendingAction = action;
+        dataStack.fileObj.click(); // triggers selectAudioFile()
+      }
+        break;
     }
   }
 
@@ -149,12 +159,10 @@ export class App extends Component<{}, State> {
     }
   }
 
+  // file change event handler
   // triggered by this.dataStack.fileObj.click()
   selectAudioFile(): void {
-    const {
-      dataStack,
-      allActions: { addActions },
-    } = this;
+    const { dataStack, allActions: { addActions } } = this;
     const { thisURL, fileObj } = dataStack;
     const { tracks } = this.state;
 
