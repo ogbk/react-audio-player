@@ -24,12 +24,6 @@ export class AudioTrack extends Component<Props, State> {
 
   track: any;
 
-  togglePlayBtn: any;
-
-  playPrevBtn: any;
-
-  playNextBtn: any;
-
   togglePlayPause: () => void;
 
   handlePlayPrev: () => void;
@@ -131,7 +125,6 @@ export class AudioTrack extends Component<Props, State> {
           alt="Play previous track"
           title="Play previous track"
           onClick={this.handlePlayPrev}
-          ref={(_playPrevBtn) => { this.playPrevBtn = _playPrevBtn; }}
         />
 
         <img
@@ -140,7 +133,6 @@ export class AudioTrack extends Component<Props, State> {
           alt={statePlayBtnTitle}
           title={statePlayBtnTitle}
           onClick={this.togglePlayPause}
-          ref={(_togglePlayBtn) => { this.togglePlayBtn = _togglePlayBtn; }}
         />
 
         <img
@@ -149,7 +141,6 @@ export class AudioTrack extends Component<Props, State> {
           alt="Play next track"
           title="Play next track"
           onClick={this.handlePlayNext}
-          ref={(_playNextBtn) => { this.playNextBtn = _playNextBtn; }}
         />
 
         <div className="audio-frame">
