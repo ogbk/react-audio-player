@@ -60,7 +60,7 @@ export class App extends Component<{}, State> {
 
   changePlayingAudio: (any) => void;
 
-  selectAudioFile: () => void;
+  uploadAudioFile: () => void;
 
   constructor() {
     super();
@@ -97,7 +97,7 @@ export class App extends Component<{}, State> {
     this.confirmClearTracks = this.confirmClearTracks.bind(this);
     this.updateTracks = this.updateTracks.bind(this);
     this.changePlayingAudio = this.changePlayingAudio.bind(this);
-    this.selectAudioFile = this.selectAudioFile.bind(this);
+    this.uploadAudioFile = this.uploadAudioFile.bind(this);
   }
 
   setTracksReleaseScreen(_tracks: Array<AudioData>): void {
@@ -118,6 +118,17 @@ export class App extends Component<{}, State> {
   playNext(_track: any): void {
     const next = (_track.nextElementSibling || _track.parentNode.firstElementChild);
     next.children[3].children[1].play();
+  }
+
+  changePlayingAudio(_audio: any): void {
+    const { dataStack } = this;
+
+    if (_audio !== dataStack.playingAudio) {
+      if (dataStack.playingAudio) {
+        dataStack.playingAudio.pause();
+      }
+      dataStack.playingAudio = _audio;
+    }
   }
 
   // trackIndex =>
@@ -144,26 +155,16 @@ export class App extends Component<{}, State> {
         const { dataStack } = this;
         dataStack.pendingIndex = trackIndex;
         dataStack.pendingAction = action;
-        dataStack.fileObj.click(); // triggers selectAudioFile()
+        dataStack.fileObj.click(); // triggers uploadAudioFile()
       }
         break;
     }
   }
 
-  changePlayingAudio(_audio: any): void {
-    const { dataStack } = this;
-
-    if (_audio !== dataStack.playingAudio) {
-      if (dataStack.playingAudio) {
-        dataStack.playingAudio.pause();
-      }
-      dataStack.playingAudio = _audio;
-    }
-  }
 
   // file change event handler
   // triggered by this.dataStack.fileObj.click()
-  selectAudioFile(): void {
+  uploadAudioFile(): void {
     const { dataStack, allActions: { addActions } } = this;
     const { thisURL, fileObj } = dataStack;
     const { tracks } = this.state;
@@ -304,7 +305,7 @@ export class App extends Component<{}, State> {
           accept="audio/*"
           className="hide"
           ref={(_file) => { this.dataStack.fileObj = _file; }}
-          onChange={this.selectAudioFile}
+          onChange={this.uploadAudioFile}
         />
 
         {
