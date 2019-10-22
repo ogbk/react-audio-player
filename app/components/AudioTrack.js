@@ -15,7 +15,6 @@ type Props = {
 };
 
 type State = {
-  isPlaying: boolean,
   togglePlaySrc: 'img/paused.png' | 'img/playing.png',
   togglePlayTitle : 'PLAY' | 'PAUSE',
 };
@@ -41,7 +40,6 @@ export class AudioTrack extends Component<Props, State> {
     super(props);
 
     this.state = {
-      isPlaying: false,
       togglePlaySrc: 'img/paused.png',
       togglePlayTitle: 'PLAY',
     };
@@ -63,7 +61,6 @@ export class AudioTrack extends Component<Props, State> {
 
   handleNotPlaying(): void {
     this.setState({
-      isPlaying: false,
       togglePlaySrc: 'img/paused.png',
       togglePlayTitle: 'PLAY',
     });
@@ -71,7 +68,6 @@ export class AudioTrack extends Component<Props, State> {
 
   handlePlaying(): void {
     this.setState({
-      isPlaying: true,
       togglePlaySrc: 'img/playing.png',
       togglePlayTitle: 'PAUSE',
     });
