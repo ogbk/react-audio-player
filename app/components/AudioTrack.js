@@ -76,8 +76,11 @@ export class AudioTrack extends Component<Props, State> {
       togglePlayTitle: 'PAUSE',
     });
 
-    const { changePlayingAudio } = this.props;
-    const { audio } = this;
+    const {
+      audio,
+      props: { changePlayingAudio },
+    } = this;
+
     changePlayingAudio(audio);
   }
 

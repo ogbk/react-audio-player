@@ -162,9 +162,13 @@ export class App extends Component<{}, State> {
   // file change event handler
   // triggered by this.dataStack.fileObj.click()
   uploadAudioFile(): void {
-    const { dataStack, allActions: { addActions } } = this;
+    const {
+      dataStack,
+      allActions: { addActions },
+      state: { tracks },
+    } = this;
+
     const { thisURL, fileObj } = dataStack;
-    const { tracks } = this.state;
 
     if (fileObj.value) { // proceed ONLY when a file is selected
       const targetfile = fileObj.files[0];
