@@ -5,14 +5,14 @@ import type { Action, DisplayMessage } from './App';
 
 type Props = {
   displayMessage: DisplayMessage,
-  updateTracks: (Action, ?number) => void,
+  runAction: (Action, ?number) => void,
   reSelectAudio: () => void,
   showScreen: (boolean) => void,
 };
 
 export const MessageFrame = ({
   displayMessage,
-  updateTracks,
+  runAction,
   reSelectAudio,
   showScreen,
 }: Props) => {
@@ -24,14 +24,14 @@ export const MessageFrame = ({
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { updateTracks('ADD_FIRST'); }}
+            onClick={() => { runAction('ADD_FIRST'); }}
           >
             <span>Save as first track</span>
           </div>
 
           <div
             className="frame-option click"
-            onClick={() => { updateTracks('ADD_LAST'); }}
+            onClick={() => { runAction('ADD_LAST'); }}
           >
             <span>Save as last track</span>
           </div>
@@ -44,7 +44,7 @@ export const MessageFrame = ({
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { updateTracks('CLEAR_TRACKS'); }}
+            onClick={() => { runAction('CLEAR_TRACKS'); }}
           >
             <span>Clearing tracks. Continue?</span>
           </div>

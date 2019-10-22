@@ -8,7 +8,7 @@ type Props = {
   name: string,
   index: number,
   screenEnabled: boolean,
-  updateTracks: (Action, ?number) => void,
+  runAction: (Action, ?number) => void,
   changePlayingAudio: (any) => void,
   playPrev: (any) => void,
   playNext: (any) => void,
@@ -88,7 +88,7 @@ export class AudioTrack extends Component<Props, State> {
       src: propsAudioSrc,
       name: propsAudioName,
       index: propsAudioIndex,
-      updateTracks: propsUpdateTracks,
+      runAction: propsRunAction,
       screenEnabled: propsScreenEnabled,
     } = this.props;
 
@@ -156,7 +156,7 @@ export class AudioTrack extends Component<Props, State> {
           title="Add next track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('ADD_NEXT', propsAudioIndex);
+              propsRunAction('ADD_NEXT', propsAudioIndex);
             }
           }}
         />
@@ -168,7 +168,7 @@ export class AudioTrack extends Component<Props, State> {
           title="Delete track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('DELETE', propsAudioIndex);
+              propsRunAction('DELETE', propsAudioIndex);
             }
           }}
         />
@@ -180,7 +180,7 @@ export class AudioTrack extends Component<Props, State> {
           title="Replace track"
           onClick={() => {
             if (propsScreenEnabled) {
-              propsUpdateTracks('REPLACE', propsAudioIndex);
+              propsRunAction('REPLACE', propsAudioIndex);
             }
           }}
         />

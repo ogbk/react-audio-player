@@ -56,7 +56,7 @@ export class App extends Component<{}, State> {
 
   confirmClearTracks: () => void;
 
-  updateTracks: (Action, ?number) => void;
+  runAction: (Action, ?number) => void;
 
   changePlayingAudio: (any) => void;
 
@@ -95,7 +95,7 @@ export class App extends Component<{}, State> {
     this.reSelectAudio = this.reSelectAudio.bind(this);
     this.addNewTrack = this.addNewTrack.bind(this);
     this.confirmClearTracks = this.confirmClearTracks.bind(this);
-    this.updateTracks = this.updateTracks.bind(this);
+    this.runAction = this.runAction.bind(this);
     this.changePlayingAudio = this.changePlayingAudio.bind(this);
     this.uploadAudioFile = this.uploadAudioFile.bind(this);
   }
@@ -135,7 +135,7 @@ export class App extends Component<{}, State> {
   //    null |
   //    index of track that triggers this action (in case of DELETE | REPLACE | ADD_NEXT)
 
-  updateTracks(action: Action, trackIndex: number): void {
+  runAction(action: Action, trackIndex: number): void {
     const { tracks } = this.state;
 
     switch (action) {
@@ -186,7 +186,7 @@ export class App extends Component<{}, State> {
         thisURL.revokeObjectURL(targetfile);
 
         // execute this.dataStack.pendingAction
-        // it cannot be 'CLEAR_TRACKS' | 'DELETE' => these must have been executed in updateTracks()
+        // it cannot be 'CLEAR_TRACKS' | 'DELETE' => these must have been executed in runAction()
         const { pendingAction } = dataStack;
 
         if (addActions.includes(pendingAction)) {
@@ -229,7 +229,7 @@ export class App extends Component<{}, State> {
     if (tracks.length) {
       this.showMessage('NEWTRACK_FIRST_OR_LAST');
     } else {
-      this.updateTracks('ADD_LAST');
+      this.runAction('ADD_LAST');
     }
   }
 
@@ -273,7 +273,7 @@ export class App extends Component<{}, State> {
                 index={idx}
                 key={`${keyIndex}`}
                 screenEnabled={stateScreenEnabled}
-                updateTracks={this.updateTracks}
+                runAction={this.runAction}
                 changePlayingAudio={this.changePlayingAudio}
                 playPrev={this.playPrev}
                 playNext={this.playNext}
@@ -312,7 +312,7 @@ export class App extends Component<{}, State> {
           stateDisplayMessage
           && (
             <MessageFrame
-              updateTracks={this.updateTracks}
+              runAction={this.runAction}
               reSelectAudio={this.reSelectAudio}
               displayMessage={stateDisplayMessage}
               showScreen={this.showScreen}
