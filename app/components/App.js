@@ -131,9 +131,7 @@ export class App extends Component<{}, State> {
       case ('DELETE'): {
         const newTracks = [...tracks];
         newTracks.splice(trackIndex, 1);
-        this.setTracksReleaseScreen(
-          newTracks,
-        );
+        this.setTracksReleaseScreen(newTracks);
       }
         break;
 
@@ -262,6 +260,7 @@ export class App extends Component<{}, State> {
       screenEnabled: stateScreenEnabled,
       displayMessage: stateDisplayMessage,
     } = this.state;
+
     return (
       <div className="app">
         <div className="tracks">
