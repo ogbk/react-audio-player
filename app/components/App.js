@@ -13,7 +13,7 @@ export type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' |
 type AudioData = {
   src: string,
   name: string,
-  keyIndex: number,
+  keyIndex: string,
 };
 
 type AllActions = {
@@ -180,7 +180,7 @@ export class App extends Component<{}, State> {
         const newAudioData = {
           src: thisURL.createObjectURL(targetfile),
           name: targetfile.name,
-          keyIndex: tracks.length,
+          keyIndex: String(Date.now()),
         };
 
         thisURL.revokeObjectURL(targetfile);
