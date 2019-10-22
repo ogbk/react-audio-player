@@ -22,7 +22,7 @@ type AllActions = {
 };
 
 type DataStack = {
-  pendingAction: ?Action,
+  pendingAction: ?AddAction,
   pendingIndex: number,
   playingAudio: HTMLAudioElement | null,
   thisURL: any,
@@ -169,9 +169,11 @@ export class App extends Component<{}, State> {
     if (fileObj.value) { // proceed ONLY when a file is selected
       const targetfile = fileObj.files[0];
 
+      // Not audio file ? --> trigger error message
+
       if (targetfile.type.indexOf('audio') === -1) {
         this.showMessage('NOT_AUDIO_FILE');
-      } else { // ONLY audio files
+      } else {
         const newAudioData = {
           src: thisURL.createObjectURL(targetfile),
           name: targetfile.name,
@@ -181,7 +183,7 @@ export class App extends Component<{}, State> {
         thisURL.revokeObjectURL(targetfile);
 
         // execute this.dataStack.pendingAction
-        //   -> 'DELETE' must have been executed in updateTracks()
+        // it cannot be 'CLEAR_TRACKS' | 'DELETE' => these must have been executed in updateTracks()
         const { pendingAction } = dataStack;
 
         if (addActions.includes(pendingAction)) {
