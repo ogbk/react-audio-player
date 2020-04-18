@@ -8,7 +8,7 @@ type Props = {
   name: string,
   index: number,
   screenEnabled: boolean,
-  runAction: (Action, ?number) => void,
+  runAction: (Action, optionalVal?:number) => void,
   changePlayingAudio: (any) => void,
   playPrev: (any) => void,
   playNext: (any) => void,
@@ -24,32 +24,12 @@ export class AudioTrack extends Component<Props, State> {
 
   track: any;
 
-  togglePlayPause: () => void;
+  state:State = {
+    togglePlaySrc: 'img/paused.png',
+    togglePlayTitle: 'PLAY',
+  };
 
-  handlePlayPrev: () => void;
-
-  handlePlayNext: () => void;
-
-  handleNotPlaying: () => void;
-
-  handlePlaying: () => void;
-
-  constructor(props: Props) {
-    super(props);
-
-    this.state = {
-      togglePlaySrc: 'img/paused.png',
-      togglePlayTitle: 'PLAY',
-    };
-
-    this.togglePlayPause = this.togglePlayPause.bind(this);
-    this.handlePlayPrev = this.handlePlayPrev.bind(this);
-    this.handlePlayNext = this.handlePlayNext.bind(this);
-    this.handleNotPlaying = this.handleNotPlaying.bind(this);
-    this.handlePlaying = this.handlePlaying.bind(this);
-  }
-
-  togglePlayPause(): void {
+  togglePlayPause = (): void => {
     const { audio } = this;
 
     if (audio.ended || audio.paused) {
@@ -59,7 +39,7 @@ export class AudioTrack extends Component<Props, State> {
     }
   }
 
-  handlePlayPrev(): void {
+  handlePlayPrev = (): void => {
     const {
       audio,
       track,
@@ -70,7 +50,7 @@ export class AudioTrack extends Component<Props, State> {
     playPrev(track);
   }
 
-  handlePlayNext(): void {
+  handlePlayNext = (): void => {
     const {
       audio,
       track,
@@ -81,14 +61,14 @@ export class AudioTrack extends Component<Props, State> {
     playNext(track);
   }
 
-  handleNotPlaying(): void {
+  handleNotPlaying = (): void => {
     this.setState({
       togglePlaySrc: 'img/paused.png',
       togglePlayTitle: 'PLAY',
     });
   }
 
-  handlePlaying(): void {
+  handlePlaying = (): void => {
     this.setState({
       togglePlaySrc: 'img/playing.png',
       togglePlayTitle: 'PAUSE',

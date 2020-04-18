@@ -5,7 +5,7 @@ import type { Action, DisplayMessage } from './App';
 
 type Props = {
   displayMessage: DisplayMessage,
-  runAction: (Action, ?number) => void,
+  runAction: (Action, optionalVal?:number) => void,
   reSelectAudio: () => void,
   showScreen: (boolean) => void,
 };
