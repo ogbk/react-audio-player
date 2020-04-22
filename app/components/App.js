@@ -8,6 +8,8 @@ type DeleteAction = 'DELETE' | 'CLEAR_TRACKS';
 type AddAction = 'REPLACE' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT';
 export type Action = DeleteAction | AddAction;
 
+export type TrackSibling = 'PREV' | 'NEXT';
+
 export type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE';
 
 type AudioData = {

@@ -1,7 +1,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import type { Action } from './App';
+import type { Action, TrackSibling } from './App';
 
 type Props = {
   src: string,
@@ -39,36 +39,30 @@ export class AudioTrack extends Component<Props, State> {
     }
   }
 
-  handlePlayPrev = (): void => {
+  playSibling = (sibling: TrackSibling): void => {
     const {
       audio,
       track,
-      props: { playPrev },
+      props: { playPrev, playNext },
     } = this;
 
     audio.pause();
-    playPrev(track);
+
+    if (sibling === 'PREV') {
+      playPrev(track);
+    } else if (sibling === 'NEXT') {
+      playNext(track);
+    }
   }
 
-  handlePlayNext = (): void => {
-    const {
-      audio,
-      track,
-      props: { playNext },
-    } = this;
-
-    audio.pause();
-    playNext(track);
-  }
-
-  handleNotPlaying = (): void => {
+  setNotPlaying = (): void => {
     this.setState({
       togglePlaySrc: 'img/paused.png',
       togglePlayTitle: 'PLAY',
     });
   }
 
-  handlePlaying = (): void => {
+  setPlaying = (): void => {
     this.setState({
       togglePlaySrc: 'img/playing.png',
       togglePlayTitle: 'PAUSE',
@@ -79,6 +73,7 @@ export class AudioTrack extends Component<Props, State> {
       props: { changePlayingAudio },
     } = this;
 
+    // conditionally update dataStack.playingAudio in <App/>
     changePlayingAudio(audio);
   }
 
@@ -104,7 +99,7 @@ export class AudioTrack extends Component<Props, State> {
           src="img/play_prev.png"
           alt="Play previous track"
           title="Play previous track"
-          onClick={this.handlePlayPrev}
+          onClick={() => { this.playSibling('PREV'); }}
         />
 
         <img
@@ -120,7 +115,7 @@ export class AudioTrack extends Component<Props, State> {
           src="img/play_next.png"
           alt="Play next track"
           title="Play next track"
-          onClick={this.handlePlayNext}
+          onClick={() => { this.playSibling('NEXT'); }}
         />
 
         <div className="audio-frame">
@@ -130,9 +125,9 @@ export class AudioTrack extends Component<Props, State> {
             controls="controls"
             preload="metadata"
             src={propsAudioSrc}
-            onPlay={this.handlePlaying}
-            onPlaying={this.handlePlaying}
-            onPause={this.handleNotPlaying}
+            onPlay={this.setPlaying}
+            onPlaying={this.setPlaying}
+            onPause={this.setNotPlaying}
             onEnded={() => { propsPlayNext(this.track); }}
             ref={(_audio) => { this.audio = _audio; }}
           />
