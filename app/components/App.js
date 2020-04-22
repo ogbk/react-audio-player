@@ -138,7 +138,7 @@ export class App extends Component<{}, State> {
       if (targetfile.type.indexOf('audio') === -1) {
         this.showMessage('NOT_AUDIO_FILE');
       } else {
-        const newAudioData = {
+        const newAudioData: AudioData = {
           src: thisURL.createObjectURL(targetfile),
           name: targetfile.name,
           keyIndex: String(Date.now()),
