@@ -14,9 +14,25 @@ type Props = {
   playNext: (any) => void,
 };
 
+type PlaySrc = 'img/paused.png' |
+                'img/playing.png' |
+                'img/play_prev.png' |
+                'img/play_next.png';
+
+type PlayCmd = 'PLAY' | 'PAUSE' | 'Play previous track' | 'Play next track';
+
+type IconValues = { iconSrc: PlaySrc, iconCmd: PlayCmd };
+
+type PlayIcon = {
+  'playing_true' : IconValues,
+  'playing_false' : IconValues,
+  'previous': IconValues,
+  'next': IconValues,
+};
+
 type State = {
-  togglePlaySrc: 'img/paused.png' | 'img/playing.png',
-  togglePlayTitle : 'PLAY' | 'PAUSE',
+  isPlaying: boolean,
+  playIcons: PlayIcon,
 };
 
 export class AudioTrack extends Component<Props, State> {
@@ -25,8 +41,14 @@ export class AudioTrack extends Component<Props, State> {
   track: any;
 
   state:State = {
-    togglePlaySrc: 'img/paused.png',
-    togglePlayTitle: 'PLAY',
+    isPlaying: false,
+
+    playIcons: {
+      playing_true: { iconSrc: 'img/playing.png', iconCmd: 'PAUSE' },
+      playing_false: { iconSrc: 'img/paused.png', iconCmd: 'PLAY' },
+      previous: { iconSrc: 'img/play_prev.png', iconCmd: 'Play previous track' },
+      next: { iconSrc: 'img/play_next.png', iconCmd: 'Play next track' },
+    },
   };
 
   togglePlayPause = (): void => {
@@ -55,26 +77,18 @@ export class AudioTrack extends Component<Props, State> {
     }
   }
 
-  setNotPlaying = (): void => {
-    this.setState({
-      togglePlaySrc: 'img/paused.png',
-      togglePlayTitle: 'PLAY',
-    });
-  }
+  setPlaying = (isPlaying: boolean): void => {
+    this.setState({ isPlaying });
 
-  setPlaying = (): void => {
-    this.setState({
-      togglePlaySrc: 'img/playing.png',
-      togglePlayTitle: 'PAUSE',
-    });
+    if (isPlaying) {
+      const {
+        audio,
+        props: { changePlayingAudio },
+      } = this;
 
-    const {
-      audio,
-      props: { changePlayingAudio },
-    } = this;
-
-    // conditionally update dataStack.playingAudio in <App/>
-    changePlayingAudio(audio);
+      // conditionally update dataStack.playingAudio in <App/>
+      changePlayingAudio(audio);
+    }
   }
 
   render() {
@@ -88,33 +102,39 @@ export class AudioTrack extends Component<Props, State> {
     } = this.props;
 
     const {
-      togglePlaySrc: statePlayBtnSrc,
-      togglePlayTitle: statePlayBtnTitle,
+      isPlaying,
+      playIcons,
     } = this.state;
+
+    const {
+      [`playing_${String(isPlaying)}`]: { iconSrc: toggleBtnSrc, iconCmd: toggleBtnCmd },
+      previous: { iconSrc: prevBtnSrc, iconCmd: prevBtnCmd },
+      next: { iconSrc: nextBtnSrc, iconCmd: nextBtnCmd },
+    } = playIcons;
 
     return (
       <div className="track" ref={(_track) => { this.track = _track; }}>
         <img
           className="playback-option click"
-          src="img/play_prev.png"
-          alt="Play previous track"
-          title="Play previous track"
+          src={prevBtnSrc}
+          alt={prevBtnCmd}
+          title={prevBtnCmd}
           onClick={() => { this.playSibling('PREV'); }}
         />
 
         <img
           className="playback-option click"
-          src={statePlayBtnSrc}
-          alt={statePlayBtnTitle}
-          title={statePlayBtnTitle}
+          src={toggleBtnSrc}
+          alt={toggleBtnCmd}
+          title={toggleBtnCmd}
           onClick={this.togglePlayPause}
         />
 
         <img
           className="playback-option click"
-          src="img/play_next.png"
-          alt="Play next track"
-          title="Play next track"
+          src={nextBtnSrc}
+          alt={nextBtnCmd}
+          title={nextBtnCmd}
           onClick={() => { this.playSibling('NEXT'); }}
         />
 
@@ -125,9 +145,9 @@ export class AudioTrack extends Component<Props, State> {
             controls="controls"
             preload="metadata"
             src={propsAudioSrc}
-            onPlay={this.setPlaying}
-            onPlaying={this.setPlaying}
-            onPause={this.setNotPlaying}
+            onPlay={() => { this.setPlaying(true); }}
+            onPlaying={() => { this.setPlaying(true); }}
+            onPause={() => { this.setPlaying(false); }}
             onEnded={() => { propsPlayNext(this.track); }}
             ref={(_audio) => { this.audio = _audio; }}
           />
