@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import type { Action, TrackSibling } from './App';
-import { playIcons, actionIcons } from '../utils/icons';
+import { trackPlayIcons, trackActionIcons } from '../utils/icons';
 
 export type TrackAction = 'ADD_NEXT' | 'DELETE' | 'REPLACE';
 
@@ -86,7 +86,7 @@ export class AudioTrack extends Component<Props, State> {
       [`playing_${String(isPlaying)}`]: { iconSrc: toggleBtnSrc, iconCmd: toggleBtnCmd },
       previous: { iconSrc: prevBtnSrc, iconCmd: prevBtnCmd },
       next: { iconSrc: nextBtnSrc, iconCmd: nextBtnCmd },
-    } = playIcons;
+    } = trackPlayIcons;
 
     return (
       <div className="track" ref={(_track) => { this.track = _track; }}>
@@ -130,7 +130,7 @@ export class AudioTrack extends Component<Props, State> {
         </div>
 
         {
-          actionIcons.map(({ iconSrc, iconCmd, action }, idx) => (
+          trackActionIcons.map(({ iconSrc, iconCmd, action }, idx) => (
             <img
               className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
               src={iconSrc}
