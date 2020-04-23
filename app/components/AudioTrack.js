@@ -3,6 +3,27 @@
 import React, { Component } from 'react';
 import type { Action, TrackSibling } from './App';
 
+
+type PlaySrc = 'img/paused.png' |
+                'img/playing.png' |
+                'img/play_prev.png' |
+                'img/play_next.png';
+type PlayCmd = 'PLAY' | 'PAUSE' | 'Play previous track' | 'Play next track';
+type PlayIcon = { iconSrc: PlaySrc, iconCmd: PlayCmd };
+type PlayIconSet = {
+  'playing_true' : PlayIcon,
+  'playing_false' : PlayIcon,
+  'previous': PlayIcon,
+  'next': PlayIcon,
+};
+
+type ActionSrc = 'img/add_next.png' |
+                  'img/delete.png' |
+                  'img/replace.png';
+type ActionCmd = 'Add next track' | 'Delete track' | 'Replace track';
+type TrackAction = 'ADD_NEXT' | 'DELETE' | 'REPLACE';
+type ActionIcon = { iconSrc: ActionSrc, iconCmd: ActionCmd, action: TrackAction };
+
 type Props = {
   src: string,
   name: string,
@@ -14,25 +35,10 @@ type Props = {
   playNext: (any) => void,
 };
 
-type PlaySrc = 'img/paused.png' |
-                'img/playing.png' |
-                'img/play_prev.png' |
-                'img/play_next.png';
-
-type PlayCmd = 'PLAY' | 'PAUSE' | 'Play previous track' | 'Play next track';
-
-type IconValues = { iconSrc: PlaySrc, iconCmd: PlayCmd };
-
-type PlayIcon = {
-  'playing_true' : IconValues,
-  'playing_false' : IconValues,
-  'previous': IconValues,
-  'next': IconValues,
-};
-
 type State = {
   isPlaying: boolean,
-  playIcons: PlayIcon,
+  playIcons: PlayIconSet,
+  actionIcons: Array<ActionIcon>,
 };
 
 export class AudioTrack extends Component<Props, State> {
@@ -49,6 +55,12 @@ export class AudioTrack extends Component<Props, State> {
       previous: { iconSrc: 'img/play_prev.png', iconCmd: 'Play previous track' },
       next: { iconSrc: 'img/play_next.png', iconCmd: 'Play next track' },
     },
+
+    actionIcons: [
+      { iconSrc: 'img/add_next.png', iconCmd: 'Add next track', action: 'ADD_NEXT' },
+      { iconSrc: 'img/delete.png', iconCmd: 'Delete track', action: 'DELETE' },
+      { iconSrc: 'img/replace.png', iconCmd: 'Replace track', action: 'REPLACE' },
+    ],
   };
 
   togglePlayPause = (): void => {
@@ -104,6 +116,7 @@ export class AudioTrack extends Component<Props, State> {
     const {
       isPlaying,
       playIcons,
+      actionIcons,
     } = this.state;
 
     const {
@@ -153,41 +166,22 @@ export class AudioTrack extends Component<Props, State> {
           />
         </div>
 
-        <img
-          className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
-          src="img/add_next.png"
-          alt="Add next track"
-          title="Add next track"
-          onClick={() => {
-            if (propsScreenEnabled) {
-              propsRunAction('ADD_NEXT', propsAudioIndex);
-            }
-          }}
-        />
+        {
+          actionIcons.map(({ iconSrc, iconCmd, action }) => (
+            <img
+              className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
+              src={iconSrc}
+              alt={iconCmd}
+              title={iconCmd}
+              onClick={() => {
+                if (propsScreenEnabled) {
+                  propsRunAction(action, propsAudioIndex);
+                }
+              }}
+            />
+          ))
+        }
 
-        <img
-          className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
-          src="img/delete.png"
-          alt="Delete track"
-          title="Delete track"
-          onClick={() => {
-            if (propsScreenEnabled) {
-              propsRunAction('DELETE', propsAudioIndex);
-            }
-          }}
-        />
-
-        <img
-          className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
-          src="img/change.png"
-          alt="Replace track"
-          title="Replace track"
-          onClick={() => {
-            if (propsScreenEnabled) {
-              propsRunAction('REPLACE', propsAudioIndex);
-            }
-          }}
-        />
       </div>
     );
   }
