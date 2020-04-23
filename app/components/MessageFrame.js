@@ -1,18 +1,20 @@
 // @flow
 
 import React from 'react';
-import type { Action, DisplayMessage } from './App';
+import type { AddAction, DeleteAction, DisplayMessage } from '../utils/actions';
 
 type Props = {
   displayMessage: DisplayMessage,
-  runAction: (Action, optionalVal?:number) => void,
+  runAddAction: (AddAction, optionalVal?:number) => void,
+  runDeleteAction: (DeleteAction, optionalVal?:number) => void,
   reSelectAudio: () => void,
   showScreen: (boolean) => void,
 };
 
 export const MessageFrame = ({
   displayMessage,
-  runAction,
+  runAddAction,
+  runDeleteAction,
   reSelectAudio,
   showScreen,
 }: Props) => {
@@ -24,14 +26,14 @@ export const MessageFrame = ({
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { runAction('ADD_FIRST'); }}
+            onClick={() => { runAddAction('ADD_FIRST'); }}
           >
             <span>Save as first track</span>
           </div>
 
           <div
             className="frame-option click"
-            onClick={() => { runAction('ADD_LAST'); }}
+            onClick={() => { runAddAction('ADD_LAST'); }}
           >
             <span>Save as last track</span>
           </div>
@@ -44,7 +46,7 @@ export const MessageFrame = ({
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { runAction('CLEAR_TRACKS'); }}
+            onClick={() => { runDeleteAction('CLEAR_TRACKS'); }}
           >
             <span>Clearing tracks. Continue?</span>
           </div>

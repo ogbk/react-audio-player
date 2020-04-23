@@ -1,17 +1,16 @@
 // @flow
 
 import React, { Component } from 'react';
-import type { Action, TrackSibling } from './App';
 import { trackPlayIcons, trackActionIcons } from '../utils/icons';
-
-export type TrackAction = 'ADD_NEXT' | 'DELETE' | 'REPLACE';
+import type { AddAction, DeleteAction, TrackSibling } from '../utils/actions';
 
 type Props = {
   src: string,
   name: string,
   index: number,
   screenEnabled: boolean,
-  runAction: (Action, optionalVal?:number) => void,
+  runAddAction: (AddAction, optionalVal?:number) => void,
+  runDeleteAction: (DeleteAction, optionalVal?:number) => void,
   changePlayingAudio: (any) => void,
   playPrev: (any) => void,
   playNext: (any) => void,
@@ -76,7 +75,8 @@ export class AudioTrack extends Component<Props, State> {
       src: propsAudioSrc,
       name: propsAudioName,
       index: propsAudioIndex,
-      runAction: propsRunAction,
+      runAddAction: propsRunAddAction,
+      runDeleteAction: propsRunDeleteAction,
       screenEnabled: propsScreenEnabled,
     } = this.props;
 
@@ -139,7 +139,11 @@ export class AudioTrack extends Component<Props, State> {
               key={idx}
               onClick={() => {
                 if (propsScreenEnabled) {
-                  propsRunAction(action, propsAudioIndex);
+                  if (action === 'DELETE') {
+                    propsRunDeleteAction(action, propsAudioIndex);
+                  } else {
+                    propsRunAddAction(action, propsAudioIndex);
+                  }
                 }
               }}
             />

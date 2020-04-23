@@ -3,24 +3,26 @@
 import React, { Component } from 'react';
 import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
+import { addActions, listActions } from '../utils/actions';
+import type {
+  AddAction,
+  DeleteAction,
+  DisplayMessage,
+} from '../utils/actions';
 
-type DeleteAction = 'DELETE' | 'CLEAR_TRACKS';
-type AddAction = 'REPLACE' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT';
-export type Action = DeleteAction | AddAction;
-
-export type TrackSibling = 'PREV' | 'NEXT';
-
-export type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE';
+const {
+  ADD_FIRST,
+  ADD_NEXT,
+  ADD_LAST,
+  DELETE,
+  REPLACE,
+  CLEAR_TRACKS,
+} = listActions;
 
 type AudioData = {
   src: string,
   name: string,
   keyIndex: string,
-};
-
-type AllActions = {
-  addActions: Array<AddAction>,
-  deleteActions: Array<DeleteAction>,
 };
 
 type DataStack = {
@@ -37,13 +39,8 @@ type State = {
 }
 
 export class App extends Component<{}, State> {
-  // ==== [ allAtions & dataStack]
-  //     detached from state, they don't trigger UI changes ====
-
-  allActions:AllActions = {
-    deleteActions: ['DELETE', 'CLEAR_TRACKS'],
-    addActions: ['REPLACE', 'ADD_FIRST', 'ADD_LAST', 'ADD_NEXT'],
-  };
+  // ==== [dataStack]
+  //     detached from state, doesn't trigger UI changes ====
 
   dataStack:DataStack = {
     pendingAction: undefined,
@@ -88,34 +85,32 @@ export class App extends Component<{}, State> {
     }
   }
 
-  // trackIndex =>
-  //    null |
-  //    index of track that triggers this action (in case of DELETE | REPLACE | ADD_NEXT)
-
-  runAction = (action: Action, trackIndex?:number = -1234): void => {
+  runDeleteAction = (action: DeleteAction, trackIndex?:number = -1234): void => {
     const { tracks } = this.state;
 
     switch (action) {
-      case ('DELETE'): {
+      case (DELETE): {
         const newTracks = [...tracks];
         newTracks.splice(trackIndex, 1);
         this.setTracksReleaseScreen(newTracks);
       }
         break;
 
-      case ('CLEAR_TRACKS'):
+      case (CLEAR_TRACKS):
         this.setTracksReleaseScreen([]);
         this.dataStack.fileObj.value = null;
         break;
 
-      default: {
-        const { dataStack } = this;
-        dataStack.pendingIndex = trackIndex;
-        dataStack.pendingAction = action;
-        dataStack.fileObj.click(); // triggers uploadAudioFile()
-      }
+      default:
         break;
     }
+  }
+
+  runAddAction = (action: AddAction, trackIndex:number = -1234): void => {
+    const { dataStack } = this;
+    dataStack.pendingIndex = trackIndex;
+    dataStack.pendingAction = action;
+    dataStack.fileObj.click(); // triggers uploadAudioFile()
   }
 
 
@@ -124,7 +119,6 @@ export class App extends Component<{}, State> {
   uploadAudioFile = (): void => {
     const {
       dataStack,
-      allActions: { addActions },
       state: { tracks },
     } = this;
 
@@ -147,7 +141,6 @@ export class App extends Component<{}, State> {
         thisURL.revokeObjectURL(targetfile);
 
         // execute this.dataStack.pendingAction
-        // it cannot be 'CLEAR_TRACKS' | 'DELETE' => these must have been executed in runAction()
         const { pendingAction } = dataStack;
 
         if (addActions.includes(pendingAction)) {
@@ -155,19 +148,19 @@ export class App extends Component<{}, State> {
           const { pendingIndex } = dataStack;
 
           switch (pendingAction) {
-            case 'REPLACE':
+            case REPLACE:
               newTracks.splice(pendingIndex, 1, newAudioData);
               break;
 
-            case 'ADD_NEXT':
+            case ADD_NEXT:
               newTracks.splice(pendingIndex + 1, 0, newAudioData);
               break;
 
-            case 'ADD_FIRST':
+            case ADD_FIRST:
               newTracks.unshift(newAudioData);
               break;
 
-            case 'ADD_LAST':
+            case ADD_LAST:
               newTracks.push(newAudioData);
               break;
 
@@ -190,7 +183,7 @@ export class App extends Component<{}, State> {
     if (tracks.length) {
       this.showMessage('NEWTRACK_FIRST_OR_LAST');
     } else {
-      this.runAction('ADD_LAST');
+      this.runAddAction(ADD_LAST);
     }
   }
 
@@ -233,7 +226,8 @@ export class App extends Component<{}, State> {
                 index={idx}
                 key={`${keyIndex}`}
                 screenEnabled={screenEnabled}
-                runAction={this.runAction}
+                runAddAction={this.runAddAction}
+                runDeleteAction={this.runDeleteAction}
                 changePlayingAudio={this.changePlayingAudio}
                 playPrev={this.playPrev}
                 playNext={this.playNext}
@@ -272,7 +266,8 @@ export class App extends Component<{}, State> {
           stateDisplayMessage
           && (
             <MessageFrame
-              runAction={this.runAction}
+              runAddAction={this.runAddAction}
+              runDeleteAction={this.runDeleteAction}
               reSelectAudio={this.reSelectAudio}
               displayMessage={stateDisplayMessage}
               showScreen={this.showScreen}

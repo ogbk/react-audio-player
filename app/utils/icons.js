@@ -1,6 +1,6 @@
 // @flow
 
-import type { TrackAction } from '../components/AudioTrack';
+import type { TrackAction } from './actions';
 
 type PlaySrc = 'img/paused.png' |
                 'img/playing.png' |
