@@ -2,27 +2,9 @@
 
 import React, { Component } from 'react';
 import type { Action, TrackSibling } from './App';
+import type { PlayIconSet, ActionIconSet } from '../utils/icons';
 
-
-type PlaySrc = 'img/paused.png' |
-                'img/playing.png' |
-                'img/play_prev.png' |
-                'img/play_next.png';
-type PlayCmd = 'PLAY' | 'PAUSE' | 'Play previous track' | 'Play next track';
-type PlayIcon = { iconSrc: PlaySrc, iconCmd: PlayCmd };
-type PlayIconSet = {
-  'playing_true' : PlayIcon,
-  'playing_false' : PlayIcon,
-  'previous': PlayIcon,
-  'next': PlayIcon,
-};
-
-type ActionSrc = 'img/add_next.png' |
-                  'img/delete.png' |
-                  'img/replace.png';
-type ActionCmd = 'Add next track' | 'Delete track' | 'Replace track';
-type TrackAction = 'ADD_NEXT' | 'DELETE' | 'REPLACE';
-type ActionIcon = { iconSrc: ActionSrc, iconCmd: ActionCmd, action: TrackAction };
+export type TrackAction = 'ADD_NEXT' | 'DELETE' | 'REPLACE';
 
 type Props = {
   src: string,
@@ -38,7 +20,7 @@ type Props = {
 type State = {
   isPlaying: boolean,
   playIcons: PlayIconSet,
-  actionIcons: Array<ActionIcon>,
+  actionIcons: ActionIconSet,
 };
 
 export class AudioTrack extends Component<Props, State> {
@@ -167,12 +149,13 @@ export class AudioTrack extends Component<Props, State> {
         </div>
 
         {
-          actionIcons.map(({ iconSrc, iconCmd, action }) => (
+          actionIcons.map(({ iconSrc, iconCmd, action }, idx) => (
             <img
               className={propsScreenEnabled ? 'track-action click' : 'track-action no-click'}
               src={iconSrc}
               alt={iconCmd}
               title={iconCmd}
+              key={idx}
               onClick={() => {
                 if (propsScreenEnabled) {
                   propsRunAction(action, propsAudioIndex);
