@@ -3,12 +3,16 @@
 import React, { Component } from 'react';
 import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
+
+import { mainAppIcons } from '../utils/icons';
 import { addActions, listActions, listMessages } from '../utils/actions';
 import type {
   AddAction,
   DeleteAction,
   DisplayMessage,
 } from '../utils/actions';
+
+const { newTrack, clearTracks } = mainAppIcons;
 
 const {
   ADD_FIRST,
@@ -221,6 +225,9 @@ export class App extends Component<{}, State> {
 
     const screenEnabled = !stateDisplayMessage;
 
+    const { iconSrc: newTrackSrc, iconCmd: newTrackCmd } = newTrack;
+    const { iconSrc: clearSrc, iconCmd: clearCmd } = clearTracks;
+
     return (
       <div className="app">
         <div className="tracks">
@@ -245,17 +252,17 @@ export class App extends Component<{}, State> {
         <div className="actions">
           <img
             className={(screenEnabled) ? 'new click' : 'hide'}
-            src="img/new.png"
-            alt="New track"
-            title="New track"
+            src={newTrackSrc}
+            alt={newTrackCmd}
+            title={newTrackCmd}
             onClick={this.addNewTrack}
           />
 
           <img
             className={(screenEnabled && stateTracks.length) ? 'clear click' : 'hide'}
-            src="img/clear.png"
-            alt="Clear tracks"
-            title="Clear tracks"
+            src={clearSrc}
+            alt={clearCmd}
+            title={clearCmd}
             onClick={this.confirmClearTracks}
           />
         </div>

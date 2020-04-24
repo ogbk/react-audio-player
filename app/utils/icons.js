@@ -36,4 +36,17 @@ const trackActionIcons:ActionIconSet = [
   { iconSrc: 'img/replace.png', iconCmd: 'Replace track', action: 'REPLACE' },
 ];
 
-export { trackPlayIcons, trackActionIcons };
+
+type MainAppSrc = 'img/new.png' | 'img/clear.png';
+type MainAppCmd = 'New track' | 'Clear tracks';
+type MainAppIcon = { iconSrc: MainAppSrc, iconCmd: MainAppCmd };
+type MainAppIconSet = {
+  'newTrack' : MainAppIcon,
+  'clearTracks' : MainAppIcon,
+};
+const mainAppIcons:MainAppIconSet = {
+  newTrack: { iconSrc: 'img/new.png', iconCmd: 'New track' },
+  clearTracks: { iconSrc: 'img/clear.png', iconCmd: 'Clear tracks' },
+};
+
+export { trackPlayIcons, trackActionIcons, mainAppIcons };
