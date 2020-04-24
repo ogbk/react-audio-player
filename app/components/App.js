@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { AudioTrack } from './AudioTrack';
 import { MessageFrame } from './MessageFrame';
-import { addActions, listActions } from '../utils/actions';
+import { addActions, listActions, listMessages } from '../utils/actions';
 import type {
   AddAction,
   DeleteAction,
@@ -18,6 +18,12 @@ const {
   REPLACE,
   CLEAR_TRACKS,
 } = listActions;
+
+const {
+  NEWTRACK_FIRST_OR_LAST,
+  CONFIRM_CLEAR_TRACKS,
+  NOT_AUDIO_FILE,
+} = listMessages;
 
 type AudioData = {
   src: string,
@@ -130,7 +136,7 @@ export class App extends Component<{}, State> {
       // Not audio file ? --> trigger error message
 
       if (targetfile.type.indexOf('audio') === -1) {
-        this.showMessage('NOT_AUDIO_FILE');
+        this.showMessage(NOT_AUDIO_FILE);
       } else {
         const newAudioData: AudioData = {
           src: thisURL.createObjectURL(targetfile),
@@ -181,14 +187,14 @@ export class App extends Component<{}, State> {
     const { tracks } = this.state;
 
     if (tracks.length) {
-      this.showMessage('NEWTRACK_FIRST_OR_LAST');
+      this.showMessage(NEWTRACK_FIRST_OR_LAST);
     } else {
       this.runAddAction(ADD_LAST);
     }
   }
 
   confirmClearTracks = (): void => {
-    this.showMessage('CONFIRM_CLEAR_TRACKS');
+    this.showMessage(CONFIRM_CLEAR_TRACKS);
   }
 
   showMessage = (_message: DisplayMessage): void => {

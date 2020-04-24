@@ -2,6 +2,19 @@
 
 import React from 'react';
 import type { AddAction, DeleteAction, DisplayMessage } from '../utils/actions';
+import { listActions, listMessages } from '../utils/actions';
+
+const {
+  ADD_FIRST,
+  ADD_LAST,
+  CLEAR_TRACKS,
+} = listActions;
+
+const {
+  NEWTRACK_FIRST_OR_LAST,
+  CONFIRM_CLEAR_TRACKS,
+  NOT_AUDIO_FILE,
+} = listMessages;
 
 type Props = {
   displayMessage: DisplayMessage,
@@ -21,19 +34,19 @@ export const MessageFrame = ({
   let toRender = null;
 
   switch (displayMessage) {
-    case 'NEWTRACK_FIRST_OR_LAST':
+    case NEWTRACK_FIRST_OR_LAST:
       toRender = (
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { runAddAction('ADD_FIRST'); }}
+            onClick={() => { runAddAction(ADD_FIRST); }}
           >
             <span>Save as first track</span>
           </div>
 
           <div
             className="frame-option click"
-            onClick={() => { runAddAction('ADD_LAST'); }}
+            onClick={() => { runAddAction(ADD_LAST); }}
           >
             <span>Save as last track</span>
           </div>
@@ -41,12 +54,12 @@ export const MessageFrame = ({
       );
       break;
 
-    case 'CONFIRM_CLEAR_TRACKS':
+    case CONFIRM_CLEAR_TRACKS:
       toRender = (
         <div className="upload-options">
           <div
             className="frame-option click"
-            onClick={() => { runDeleteAction('CLEAR_TRACKS'); }}
+            onClick={() => { runDeleteAction(CLEAR_TRACKS); }}
           >
             <span>Clearing tracks. Continue?</span>
           </div>
@@ -54,7 +67,7 @@ export const MessageFrame = ({
       );
       break;
 
-    case 'NOT_AUDIO_FILE':
+    case NOT_AUDIO_FILE:
       toRender = (
         <div className="audio-error">
           <div

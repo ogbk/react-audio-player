@@ -38,8 +38,37 @@ const allActions:AllActions = {
 const addActions:Array<AddAction> = ['REPLACE', 'ADD_FIRST', 'ADD_LAST', 'ADD_NEXT'];
 const deleteActions:Array<DeleteAction> = ['DELETE', 'CLEAR_TRACKS'];
 
-export { addActions, deleteActions, listActions };
-
-export type TrackSibling = 'PREV' | 'NEXT';
 export type TrackAction = 'ADD_NEXT' | 'DELETE' | 'REPLACE';
 export type DisplayMessage = 'NEWTRACK_FIRST_OR_LAST' | 'CONFIRM_CLEAR_TRACKS' | 'NOT_AUDIO_FILE';
+
+type ListMessage = {
+  NEWTRACK_FIRST_OR_LAST: DisplayMessage,
+  CONFIRM_CLEAR_TRACKS: DisplayMessage,
+  NOT_AUDIO_FILE: DisplayMessage,
+};
+
+const listMessages:ListMessage = {
+  NEWTRACK_FIRST_OR_LAST: 'NEWTRACK_FIRST_OR_LAST',
+  CONFIRM_CLEAR_TRACKS: 'CONFIRM_CLEAR_TRACKS',
+  NOT_AUDIO_FILE: 'NOT_AUDIO_FILE',
+};
+
+export type TrackSibling = 'PREV' | 'NEXT';
+
+type ListSibling = {
+  PREV: TrackSibling,
+  NEXT: TrackSibling,
+};
+
+const listSiblings:ListSibling = {
+  PREV: 'PREV',
+  NEXT: 'NEXT',
+};
+
+export {
+  addActions,
+  deleteActions,
+  listSiblings,
+  listActions,
+  listMessages,
+};

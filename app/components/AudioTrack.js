@@ -3,6 +3,9 @@
 import React, { Component } from 'react';
 import { trackPlayIcons, trackActionIcons } from '../utils/icons';
 import type { AddAction, DeleteAction, TrackSibling } from '../utils/actions';
+import { listSiblings } from '../utils/actions';
+
+const { PREV, NEXT } = listSiblings;
 
 type Props = {
   src: string,
@@ -48,9 +51,9 @@ export class AudioTrack extends Component<Props, State> {
 
     audio.pause();
 
-    if (sibling === 'PREV') {
+    if (sibling === PREV) {
       playPrev(track);
-    } else if (sibling === 'NEXT') {
+    } else if (sibling === NEXT) {
       playNext(track);
     }
   }
@@ -95,7 +98,7 @@ export class AudioTrack extends Component<Props, State> {
           src={prevBtnSrc}
           alt={prevBtnCmd}
           title={prevBtnCmd}
-          onClick={() => { this.playSibling('PREV'); }}
+          onClick={() => { this.playSibling(PREV); }}
         />
 
         <img
@@ -111,7 +114,7 @@ export class AudioTrack extends Component<Props, State> {
           src={nextBtnSrc}
           alt={nextBtnCmd}
           title={nextBtnCmd}
-          onClick={() => { this.playSibling('NEXT'); }}
+          onClick={() => { this.playSibling(NEXT); }}
         />
 
         <div className="audio-frame">
