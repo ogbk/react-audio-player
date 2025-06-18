@@ -21,6 +21,7 @@
     "@babel/polyfill": "7.6.0",
     "@babel/preset-env": "7.6.3",
     "@babel/preset-react": "7.6.3",
+    "@babel/runtime": "7.27.6",
     "ajv": "^6.12.6",
     "babel-loader": "8.0.6",
     "core-js": "3.3.2",
@@ -47,7 +48,6 @@
     "@babel/cli": "^7.27.2",
     "@babel/preset-flow": "7.0.0",
     "babel-eslint": "10.0.3",
-    "babel-jest": "^30.0.0",
     "eslint": "6.5.1",
     "eslint-config-airbnb": "18.0.1",
     "eslint-plugin-import": "2.18.2",
@@ -56,8 +56,6 @@
     "eslint-plugin-react-hooks": "1.7.0",
     "eslint-watch": "6.0.1",
     "flow-bin": "0.109.0",
-    "jest": "^30.0.0",
-    "jest-cli": "^30.0.0",
     "sass-lint": "1.12.1"
   }
 }
