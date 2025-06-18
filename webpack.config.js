@@ -6,7 +6,7 @@ module.exports = {
     path: `${__dirname}/public`,
     filename: 'bundle.js',
   },
-  mode: 'none',
+  mode: 'development',
   devServer: {
     static: {
       directory: `${__dirname}/public`,
