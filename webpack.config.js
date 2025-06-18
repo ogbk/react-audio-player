@@ -7,6 +7,10 @@ module.exports = {
     filename: 'bundle.js',
   },
   mode: 'none',
+  devServer: {
+    contentBase: `${__dirname}/public`,
+    port: 8000,
+  },
   module: {
     rules: [
       { test: /\.js$/, use: 'babel-loader', exclude: /(node_modules)/ },
