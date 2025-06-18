@@ -8,7 +8,10 @@ module.exports = {
   },
   mode: 'none',
   devServer: {
-    contentBase: `${__dirname}/public`,
+    static: {
+      directory: `${__dirname}/public`,
+    },
+    compress: true,
     port: 8000,
   },
   module: {
