@@ -34,7 +34,7 @@ type AudioData = {
 };
 
 type DataStack = {
-  pendingAction: ?AddAction,
+  pendingAction?: AddAction,
   pendingIndex: number,
   playingAudio: HTMLAudioElement | null,
   thisURL: any,
@@ -42,7 +42,7 @@ type DataStack = {
 };
 
 type State = {
-  displayMessage: ?DisplayMessage,
+  displayMessage?: DisplayMessage,
   tracks: Array<AudioData>,
 }
 
