@@ -1,7 +1,7 @@
 # react-audio-player
 
 React app that loads and plays audio files on user's pc.
-App is linted (eslint and sass-lint) and built with flow.js static typechecking.
+App is linted (eslint and sass-lint) and built with typescript.
 
 ## Running locally
 
@@ -58,10 +58,3 @@ App is linted (eslint and sass-lint) and built with flow.js static typechecking.
 
 - ESLint `npm run eslint`
 - Sass lint `npm run sass-lint`
-
-
-## Static typechecking with Flow
-
-- Stop flow server `npm run flow stop`
-- Start flow server `npm run flow start`
-- Run flow `npm run flow status`

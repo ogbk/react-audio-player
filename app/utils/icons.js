@@ -1,5 +1,3 @@
-// @flow
-
 import type { TrackAction } from './actions';
 
 type PlaySrc = 'img/paused.png' |

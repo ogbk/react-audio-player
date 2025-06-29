@@ -1,5 +1,3 @@
-// @flow
-
 import React, { Component } from 'react';
 import { trackPlayIcons, trackActionIcons } from '../utils/icons';
 import type { AddAction, DeleteAction, TrackSibling } from '../utils/actions';

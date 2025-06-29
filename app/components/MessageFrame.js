@@ -1,5 +1,3 @@
-// @flow
-
 import React from 'react';
 import type { AddAction, DeleteAction, DisplayMessage } from '../utils/actions';
 import { listActions, listMessages } from '../utils/actions';

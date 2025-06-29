@@ -1,5 +1,3 @@
-// @flow
-
 export type DeleteAction = 'DELETE' | 'CLEAR_TRACKS';
 export type AddAction = 'REPLACE' | 'ADD_FIRST' | 'ADD_LAST' | 'ADD_NEXT';
 export type Action = DeleteAction | AddAction;
