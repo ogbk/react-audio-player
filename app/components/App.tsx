@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
-import { AudioTrack } from './AudioTrack';
-import { MessageFrame } from './MessageFrame';
+import { AudioTrack } from './AudioTrack.tsx';
+import { MessageFrame } from './MessageFrame.tsx';
 
-import { mainAppIcons } from '../utils/icons';
-import { addActions, listActions, listMessages } from '../utils/actions';
+import { mainAppIcons } from '../utils/icons.ts';
+import { addActions, listActions, listMessages } from '../utils/actions.ts';
 import type {
   AddAction,
   DeleteAction,
   DisplayMessage,
-} from '../utils/actions';
+} from '../utils/actions.ts';
 
 const { newTrack, clearTracks } = mainAppIcons;
 

@@ -1,4 +1,4 @@
-import type { TrackAction } from './actions';
+import type { TrackAction } from './actions.ts';
 
 type PlaySrc = 'img/paused.png' |
                 'img/playing.png' |

@@ -1,6 +1,6 @@
 import React from 'react';
-import type { AddAction, DeleteAction, DisplayMessage } from '../utils/actions';
-import { listActions, listMessages } from '../utils/actions';
+import type { AddAction, DeleteAction, DisplayMessage } from '../utils/actions.ts';
+import { listActions, listMessages } from '../utils/actions.ts';
 
 const {
   ADD_FIRST,

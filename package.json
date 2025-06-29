@@ -2,7 +2,7 @@
   "name": "react_audio_player",
   "version": "1.0.0",
   "description": "An audio player written in React",
-  "main": "index.js",
+  "main": "index.tsx",
   "scripts": {
     "dev": "webpack-dev-server --hot --open",
     "serve": "webpack serve --open",

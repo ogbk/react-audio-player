@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { trackPlayIcons, trackActionIcons } from '../utils/icons';
-import type { AddAction, DeleteAction, TrackSibling } from '../utils/actions';
-import { listSiblings } from '../utils/actions';
+import { trackPlayIcons, trackActionIcons } from '../utils/icons.ts';
+import type { AddAction, DeleteAction, TrackSibling } from '../utils/actions.ts';
+import { listSiblings } from '../utils/actions.ts';
 
 const { PREV, NEXT } = listSiblings;
 

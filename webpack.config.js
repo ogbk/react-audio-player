@@ -1,7 +1,7 @@
 // var webpack = require('webpack');
 
 module.exports = {
-  entry: `${__dirname}/app/components/index.js`,
+  entry: `${__dirname}/app/components/index.tsx`,
   output: {
     path: `${__dirname}/public`,
     filename: 'bundle.js',
@@ -16,10 +16,10 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.js$/, use: 'babel-loader', exclude: /(node_modules)/ },
-      { test: /\.css$/i, use: ['style-loader', 'css-loader'] },
-      { test: /\.s[ac]ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'] },
-      { test: /\.(txt|jl)$/i, use: 'raw-loader' },
+      { test: /\.[jt]{1}sx?$/, use: 'babel-loader', exclude: /(node_modules)/ },
+      { test: /\.css$/i, use: ['style-loader', 'css-loader'], exclude: /(node_modules)/ },
+      { test: /\.s[ac]ss$/i, use: ['style-loader', 'css-loader', 'sass-loader'], exclude: /(node_modules)/ },
+      { test: /\.(txt|jl)$/i, use: 'raw-loader', exclude: /(node_modules)/ },
     ],
   },
 };
