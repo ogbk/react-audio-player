@@ -1,9 +1,8 @@
 import React from 'react';
-import { render } from 'react-dom';
-import { App } from './App.tsx';
-require('../sass/styles.sass');
+import { createRoot } from 'react-dom/client';
+import App from './App.tsx';
+import '../sass/styles.sass';
 
-render(
-  <App />,
-  window.document.getElementById('root'),
-);
+// @ts-expect-error
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);

@@ -46,7 +46,7 @@ type State = {
   tracks: Array<AudioData>,
 }
 
-export class App extends Component<{}, State> {
+export default class App extends Component<{}, State> {
   // ==== [dataStack]
   //     detached from state, doesn't trigger UI changes ====
 
