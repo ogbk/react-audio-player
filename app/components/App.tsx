@@ -180,18 +180,10 @@ const App = () => {
     <div className="app">
       <div className="tracks">
         {
-          tracks.map(({ src, name, keyIndex }, idx) => (
+          tracks.map(({ src, name, keyIndex }, index) => (
             <AudioTrack
-              src={src}
-              name={name}
-              index={idx}
               key={`${keyIndex}`}
-              screenEnabled={screenEnabled}
-              runAddAction={runAddAction}
-              runDeleteAction={runDeleteAction}
-              changePlayingAudio={changePlayingAudio}
-              playPrev={playPrev}
-              playNext={playNext}
+              {...{src, name, index, screenEnabled, runAddAction, runDeleteAction, changePlayingAudio, playPrev, playNext }}
             />
           ))
         }
@@ -227,11 +219,7 @@ const App = () => {
         displayMessage
         && (
           <MessageFrame
-            runAddAction={runAddAction}
-            runDeleteAction={runDeleteAction}
-            reSelectAudio={reSelectAudio}
-            displayMessage={displayMessage}
-            showScreen={showScreen}
+            {... {runAddAction, runDeleteAction, reSelectAudio, displayMessage, showScreen}}
           />
         )
       }
