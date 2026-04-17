@@ -39,8 +39,8 @@ const App = () => {
   const [displayMessage, setDisplayMessage] = useState<DisplayMessage>();
   const [tracks, setTracks] = useState<Array<AudioData>>([]);
 
+  const thisURL: any = window.URL || window.webkitURL || URL;
   let playingAudio: HTMLAudioElement;
-  let thisURL: any = window.URL || window.webkitURL || URL;
   let fileObj: any = null;
 
   const setTracksReleaseScreen = (_tracks: Array<AudioData>): void => {
