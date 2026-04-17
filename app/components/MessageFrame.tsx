@@ -16,10 +16,10 @@ const {
 
 type Props = {
   displayMessage: DisplayMessage,
-  runAddAction: (AddAction, optionalVal?:number) => void,
-  runDeleteAction: (DeleteAction, optionalVal?:number) => void,
+  runAddAction: (aa: AddAction, optionalVal?: number) => void,
+  runDeleteAction: (da: DeleteAction, optionalVal?: number) => void,
   reSelectAudio: () => void,
-  showScreen: (boolean) => void,
+  showScreen: (b: boolean) => void,
 };
 
 export const MessageFrame = ({

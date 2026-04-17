@@ -93,7 +93,7 @@ export default class App extends Component<{}, State> {
     }
   }
 
-  runDeleteAction = (action: DeleteAction, trackIndex?:number = -1234): void => {
+  runDeleteAction = (action: DeleteAction, trackIndex: number = -1234): void => {
     const { tracks } = this.state;
 
     switch (action) {

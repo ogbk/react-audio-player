@@ -10,11 +10,11 @@ type Props = {
   name: string,
   index: number,
   screenEnabled: boolean,
-  runAddAction: (AddAction, optionalVal?:number) => void,
-  runDeleteAction: (DeleteAction, optionalVal?:number) => void,
-  changePlayingAudio: (any) => void,
-  playPrev: (any) => void,
-  playNext: (any) => void,
+  runAddAction: (aa: AddAction, optionalVal?: number) => void,
+  runDeleteAction: (da: DeleteAction, optionalVal?: number) => void,
+  changePlayingAudio: (a: any) => void,
+  playPrev: (a: any) => void,
+  playNext: (a: any) => void,
 };
 
 export const AudioTrack = (props: Props) => {
