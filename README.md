@@ -8,9 +8,8 @@ App is linted (eslint and sass-lint) and built with typescript.
 - `git clone` or download this repository
 - `cd react-audio-player`
 - `npm install`
-- run in dev mode: `npm run dev`
-- run in prod mode: `npm run prod`
-- open html file (with preferred browser): `public/index.html`
+- run in dev mode: `npm run dev` to spin up a server on `localhost:8000`.
+- run in prod mode: `npm run prod` and open `public/index.html` with preferred browser
 
 ## Functionality
 
@@ -22,7 +21,7 @@ App is linted (eslint and sass-lint) and built with typescript.
 	
 ## Structure - app uses 3 components
 
-- App => main component
+- `App` => main component
 	It contains:
 	- uploaded tracks (AudioTrack components)
 
@@ -32,14 +31,14 @@ App is linted (eslint and sass-lint) and built with typescript.
 	- [clear button] => clear list of selected tracks.
 		App will prompt confirmation before proceeding.
 	
-- MessageFrame => mounted in one of 3 cases
+- `MessageFrame` => mounted in one of 3 cases
 	- user selects a non audio file ==> prompts reselection
 	- user selects file when track list is not empty ==> lets you choose the position of the new file (either as first or last in list)
 	- user wants to clear selected tracks ==> prompts confirmation before proceeding
 
 	All 3 operations can be aborted by clicking the ABORT button.
 	
-- AudioTrack => selected audio track.
+- `AudioTrack` => selected audio track.
   It contains:
 	- name of track
 	- html audio element for the selected file.
@@ -58,3 +57,6 @@ App is linted (eslint and sass-lint) and built with typescript.
 
 - ESLint `npm run eslint`
 - Sass lint `npm run sass-lint`
+
+## Typechecking
+- Typescript check `npm run typescript`
