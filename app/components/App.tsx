@@ -43,7 +43,7 @@ const App = () => {
   let playingAudio: HTMLAudioElement;
   let fileObj: any = null;
 
-  const setTracksReleaseScreen = (_tracks: Array<AudioData>): void => {
+  const showTracksAndReleaseScreen = (_tracks: Array<AudioData>): void => {
     setDisplayMessage(undefined);
     setTracks(_tracks);
   }
@@ -74,12 +74,12 @@ const App = () => {
       case (DELETE): {
         const newTracks = [...tracks];
         newTracks.splice(trackIndex, 1);
-        setTracksReleaseScreen(newTracks);
+        showTracksAndReleaseScreen(newTracks);
         break;
       }
 
       case (CLEAR_TRACKS): {
-        setTracksReleaseScreen([]);
+        showTracksAndReleaseScreen([]);
         fileObj.value = null;
         break;
       }
@@ -140,7 +140,7 @@ const App = () => {
               break;
           }
 
-          setTracksReleaseScreen(newTracks);
+          showTracksAndReleaseScreen(newTracks);
         }
       }
     }
