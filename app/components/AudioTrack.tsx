@@ -45,7 +45,7 @@ export const AudioTrack = (props: Props) => {
     setIsPlaying(newIsPlaying);
 
     if (newIsPlaying) {
-      // conditionally update dataStack.playingAudio in <App/>
+      // conditionally update playingAudio in <App/>
       props.changePlayingAudio(audioFile);
     }
   }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { AudioTrack } from './AudioTrack.tsx';
 import { MessageFrame } from './MessageFrame.tsx';
 
@@ -33,104 +33,71 @@ type AudioData = {
   keyIndex: string,
 };
 
-type DataStack = {
-  pendingAction?: AddAction,
-  pendingIndex: number,
-  playingAudio: HTMLAudioElement | null,
-  thisURL: any,
-  fileObj: any,
-};
+const App = () => {
+  const [pendingAction, setPendingAction] = useState<AddAction>();
+  const [pendingIndex, setPendingIndex] = useState<number>(-2);
+  const [displayMessage, setDisplayMessage] = useState<DisplayMessage>();
+  const [tracks, setTracks] = useState<Array<AudioData>>([]);
 
-type State = {
-  displayMessage?: DisplayMessage,
-  tracks: Array<AudioData>,
-}
+  let playingAudio: HTMLAudioElement;
+  let thisURL: any = window.URL || window.webkitURL || URL;
+  let fileObj: any = null;
 
-export default class App extends Component<{}, State> {
-  // ==== [dataStack]
-  //     detached from state, doesn't trigger UI changes ====
-
-  dataStack:DataStack = {
-    pendingAction: undefined,
-    pendingIndex: -2,
-    playingAudio: null,
-    thisURL: (window.URL || window.webkitURL || URL),
-    fileObj: null,
-  };
-
-  state:State = {
-    displayMessage: undefined,
-    tracks: [],
-  };
-
-  setTracksReleaseScreen = (_tracks: Array<AudioData>): void => {
-    this.setState({
-      displayMessage: undefined,
-      tracks: _tracks,
-    });
+  const setTracksReleaseScreen = (_tracks: Array<AudioData>): void => {
+    setDisplayMessage(undefined);
+    setTracks(_tracks);
   }
 
   // play previous track or last track (if _track is first in list)
-  playPrev = (_track: any): void => {
+  const playPrev = (_track: any): void => {
     const prev = (_track.previousElementSibling || _track.parentNode.lastElementChild);
     prev.children[3].children[1].play();
   }
 
   // play next track or first track (if _track is last in list)
-  playNext = (_track: any): void => {
+  const playNext = (_track: any): void => {
     const next = (_track.nextElementSibling || _track.parentNode.firstElementChild);
     next.children[3].children[1].play();
   }
 
-  changePlayingAudio = (_audio: any): void => {
-    const { dataStack } = this;
-
-    if (_audio !== dataStack.playingAudio) {
-      if (dataStack.playingAudio) {
-        dataStack.playingAudio.pause();
+  const changePlayingAudio = (_audio: any): void => {
+    if (_audio !== playingAudio) {
+      if (playingAudio) {
+        playingAudio.pause();
       }
-      dataStack.playingAudio = _audio;
+      playingAudio = _audio;
     }
   }
 
-  runDeleteAction = (action: DeleteAction, trackIndex: number = -1234): void => {
-    const { tracks } = this.state;
-
+  const runDeleteAction = (action: DeleteAction, trackIndex: number = -1234): void => {
     switch (action) {
       case (DELETE): {
         const newTracks = [...tracks];
         newTracks.splice(trackIndex, 1);
-        this.setTracksReleaseScreen(newTracks);
+        setTracksReleaseScreen(newTracks);
+        break;
       }
-        break;
 
-      case (CLEAR_TRACKS):
-        this.setTracksReleaseScreen([]);
-        this.dataStack.fileObj.value = null;
+      case (CLEAR_TRACKS): {
+        setTracksReleaseScreen([]);
+        fileObj.value = null;
         break;
+      }
 
       default:
         break;
     }
   }
 
-  runAddAction = (action: AddAction, trackIndex:number = -1234): void => {
-    const { dataStack } = this;
-    dataStack.pendingIndex = trackIndex;
-    dataStack.pendingAction = action;
-    dataStack.fileObj.click(); // triggers uploadAudioFile()
+  const runAddAction = (action: AddAction, trackIndex: number = -1234): void => {
+    setPendingIndex(trackIndex);
+    setPendingAction(action);
+    fileObj.click(); // triggers uploadAudioFile()
   }
 
-
   // file change event handler
-  // triggered by this.dataStack.fileObj.click()
-  uploadAudioFile = (): void => {
-    const {
-      dataStack,
-      state: { tracks },
-    } = this;
-
-    const { thisURL, fileObj } = dataStack;
+  // triggered by fileObj.click()
+  const uploadAudioFile = (): void => {
 
     if (fileObj.value) { // proceed ONLY when a file is selected
       const targetfile = fileObj.files[0];
@@ -138,7 +105,7 @@ export default class App extends Component<{}, State> {
       // Not audio file ? --> trigger error message
 
       if (targetfile.type.indexOf('audio') === -1) {
-        this.showMessage(NOT_AUDIO_FILE);
+        showMessage(NOT_AUDIO_FILE);
       } else {
         const newAudioData: AudioData = {
           src: thisURL.createObjectURL(targetfile),
@@ -148,13 +115,10 @@ export default class App extends Component<{}, State> {
 
         thisURL.revokeObjectURL(targetfile);
 
-        // execute this.dataStack.pendingAction
-        const { pendingAction } = dataStack;
-
+        // execute pendingAction
         if (addActions.includes(pendingAction)) {
           const newTracks = [...tracks];
-          const { pendingIndex } = dataStack;
-
+          
           switch (pendingAction) {
             case REPLACE:
               newTracks.splice(pendingIndex, 1, newAudioData);
@@ -176,7 +140,7 @@ export default class App extends Component<{}, State> {
               break;
           }
 
-          this.setTracksReleaseScreen(newTracks);
+          setTracksReleaseScreen(newTracks);
         }
       }
     }
@@ -184,109 +148,96 @@ export default class App extends Component<{}, State> {
     fileObj.value = null;
   }
 
-
-  addNewTrack = (): void => {
-    const { tracks } = this.state;
-
-    if (tracks.length) {
-      this.showMessage(NEWTRACK_FIRST_OR_LAST);
+  const addNewTrack = (): void => {
+   if (tracks.length) {
+      showMessage(NEWTRACK_FIRST_OR_LAST);
     } else {
-      this.runAddAction(ADD_LAST);
+      runAddAction(ADD_LAST);
     }
   }
 
-  confirmClearTracks = (): void => {
-    this.showMessage(CONFIRM_CLEAR_TRACKS);
+  const confirmClearTracks = (): void => {
+    showMessage(CONFIRM_CLEAR_TRACKS);
   }
 
-  showMessage = (_message: DisplayMessage): void => {
-    this.setState({
-      displayMessage: _message,
-    });
+  const showMessage = (_message: DisplayMessage): void => {
+    setDisplayMessage(_message);
   }
 
-  showScreen = (): void => {
-    this.setState({
-      displayMessage: undefined,
-    });
+  const showScreen = (): void => {
+    setDisplayMessage(undefined);
   }
 
-  reSelectAudio = (): void => {
-    this.dataStack.fileObj.click();
+  const reSelectAudio = (): void => {
+    fileObj.click();
   }
 
-  render() {
-    const {
-      tracks: stateTracks,
-      displayMessage: stateDisplayMessage,
-    } = this.state;
+  const screenEnabled = !displayMessage;
+  const { iconSrc: newTrackSrc, iconCmd: newTrackCmd } = newTrack;
+  const { iconSrc: clearSrc, iconCmd: clearCmd } = clearTracks;
 
-    const screenEnabled = !stateDisplayMessage;
+  return (
+    <div className="app">
+      <div className="tracks">
+        {
+          tracks.map(({ src, name, keyIndex }, idx) => (
+            <AudioTrack
+              src={src}
+              name={name}
+              index={idx}
+              key={`${keyIndex}`}
+              screenEnabled={screenEnabled}
+              runAddAction={runAddAction}
+              runDeleteAction={runDeleteAction}
+              changePlayingAudio={changePlayingAudio}
+              playPrev={playPrev}
+              playNext={playNext}
+            />
+          ))
+        }
+      </div>
 
-    const { iconSrc: newTrackSrc, iconCmd: newTrackCmd } = newTrack;
-    const { iconSrc: clearSrc, iconCmd: clearCmd } = clearTracks;
-
-    return (
-      <div className="app">
-        <div className="tracks">
-          {
-            stateTracks.map(({ src, name, keyIndex }, idx) => (
-              <AudioTrack
-                src={src}
-                name={name}
-                index={idx}
-                key={`${keyIndex}`}
-                screenEnabled={screenEnabled}
-                runAddAction={this.runAddAction}
-                runDeleteAction={this.runDeleteAction}
-                changePlayingAudio={this.changePlayingAudio}
-                playPrev={this.playPrev}
-                playNext={this.playNext}
-              />
-            ))
-          }
-        </div>
-
-        <div className="actions">
-          <img
-            className={(screenEnabled) ? 'new click' : 'hide'}
-            src={newTrackSrc}
-            alt={newTrackCmd}
-            title={newTrackCmd}
-            onClick={this.addNewTrack}
-          />
-
-          <img
-            className={(screenEnabled && stateTracks.length) ? 'clear click' : 'hide'}
-            src={clearSrc}
-            alt={clearCmd}
-            title={clearCmd}
-            onClick={this.confirmClearTracks}
-          />
-        </div>
-
-        <input
-          type="file"
-          accept="audio/*"
-          className="hide"
-          ref={(_file) => { this.dataStack.fileObj = _file; }}
-          onChange={this.uploadAudioFile}
+      <div className="actions">
+        <img
+          className={(screenEnabled) ? 'new click' : 'hide'}
+          src={newTrackSrc}
+          alt={newTrackCmd}
+          title={newTrackCmd}
+          onClick={addNewTrack}
         />
 
-        {
-          stateDisplayMessage
-          && (
-            <MessageFrame
-              runAddAction={this.runAddAction}
-              runDeleteAction={this.runDeleteAction}
-              reSelectAudio={this.reSelectAudio}
-              displayMessage={stateDisplayMessage}
-              showScreen={this.showScreen}
-            />
-          )
-        }
-
+        <img
+          className={(screenEnabled && tracks.length) ? 'clear click' : 'hide'}
+          src={clearSrc}
+          alt={clearCmd}
+          title={clearCmd}
+          onClick={confirmClearTracks}
+        />
       </div>
-    );
-  }
+
+      <input
+        type="file"
+        accept="audio/*"
+        className="hide"
+        ref={(_file) => { fileObj = _file; }}
+        onChange={uploadAudioFile}
+      />
+
+      {
+        displayMessage
+        && (
+          <MessageFrame
+            runAddAction={runAddAction}
+            runDeleteAction={runDeleteAction}
+            reSelectAudio={reSelectAudio}
+            displayMessage={displayMessage}
+            showScreen={showScreen}
+          />
+        )
+      }
+
+    </div>
+  );
 }
+
+export default App;
