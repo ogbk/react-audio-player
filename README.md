@@ -59,4 +59,4 @@ App is linted (eslint and sass-lint) and built with typescript.
 - Sass lint `npm run sass-lint`
 
 ## Typechecking
-- Typescript check `npm run typescript`
+- Typescript check `npm run typecheck`
