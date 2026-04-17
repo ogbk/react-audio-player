@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { trackPlayIcons, trackActionIcons } from '../utils/icons.ts';
 import type { AddAction, DeleteAction, TrackSibling } from '../utils/actions.ts';
 import { listSiblings } from '../utils/actions.ts';
@@ -17,37 +17,22 @@ type Props = {
   playNext: (any) => void,
 };
 
-type State = {
-  isPlaying: boolean,
-};
+export const AudioTrack = (props: Props) => {
+  let audioFile: any;
+  let track: any;
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
-export class AudioTrack extends Component<Props, State> {
-  audio: any;
-
-  track: any;
-
-  state:State = {
-    isPlaying: false,
-  };
-
-  togglePlayPause = (): void => {
-    const { audio } = this;
-
-    if (audio.ended || audio.paused) {
-      audio.play();
+  const togglePlayPause = (): void => {
+    if (audioFile.ended || audioFile.paused) {
+      audioFile.play();
     } else {
-      audio.pause();
+      audioFile.pause();
     }
   }
 
-  playSibling = (sibling: TrackSibling): void => {
-    const {
-      audio,
-      track,
-      props: { playPrev, playNext },
-    } = this;
-
-    audio.pause();
+  const playSibling = (sibling: TrackSibling): void => {
+    const {playPrev, playNext} = props;
+    audioFile.pause();
 
     if (sibling === PREV) {
       playPrev(track);
@@ -56,47 +41,39 @@ export class AudioTrack extends Component<Props, State> {
     }
   }
 
-  setPlaying = (isPlaying: boolean): void => {
-    this.setState({ isPlaying });
+  const setPlaying = (newIsPlaying: boolean): void => {
+    setIsPlaying(newIsPlaying);
 
-    if (isPlaying) {
-      const {
-        audio,
-        props: { changePlayingAudio },
-      } = this;
-
+    if (newIsPlaying) {
       // conditionally update dataStack.playingAudio in <App/>
-      changePlayingAudio(audio);
+      props.changePlayingAudio(audioFile);
     }
   }
 
-  render() {
-    const {
-      playNext: propsPlayNext,
-      src: propsAudioSrc,
-      name: propsAudioName,
-      index: propsAudioIndex,
-      runAddAction: propsRunAddAction,
-      runDeleteAction: propsRunDeleteAction,
-      screenEnabled: propsScreenEnabled,
-    } = this.props;
+  const {
+    playNext: propsPlayNext,
+    src: propsAudioSrc,
+    name: propsAudioName,
+    index: propsAudioIndex,
+    runAddAction: propsRunAddAction,
+    runDeleteAction: propsRunDeleteAction,
+    screenEnabled: propsScreenEnabled,
+  } = props;
 
-    const { isPlaying } = this.state;
-
-    const {
-      [`playing_${String(isPlaying)}`]: { iconSrc: toggleBtnSrc, iconCmd: toggleBtnCmd },
-      previous: { iconSrc: prevBtnSrc, iconCmd: prevBtnCmd },
-      next: { iconSrc: nextBtnSrc, iconCmd: nextBtnCmd },
-    } = trackPlayIcons;
+  const {
+    [`playing_${String(isPlaying)}`]: { iconSrc: toggleBtnSrc, iconCmd: toggleBtnCmd },
+    previous: { iconSrc: prevBtnSrc, iconCmd: prevBtnCmd },
+    next: { iconSrc: nextBtnSrc, iconCmd: nextBtnCmd },
+  } = trackPlayIcons;
 
     return (
-      <div className="track" ref={(_track) => { this.track = _track; }}>
+      <div className="track" ref={(_track) => { track = _track; }}>
         <img
           className="playback-option click"
           src={prevBtnSrc}
           alt={prevBtnCmd}
           title={prevBtnCmd}
-          onClick={() => { this.playSibling(PREV); }}
+          onClick={() => { playSibling(PREV); }}
         />
 
         <img
@@ -104,7 +81,7 @@ export class AudioTrack extends Component<Props, State> {
           src={toggleBtnSrc}
           alt={toggleBtnCmd}
           title={toggleBtnCmd}
-          onClick={this.togglePlayPause}
+          onClick={togglePlayPause}
         />
 
         <img
@@ -112,21 +89,21 @@ export class AudioTrack extends Component<Props, State> {
           src={nextBtnSrc}
           alt={nextBtnCmd}
           title={nextBtnCmd}
-          onClick={() => { this.playSibling(NEXT); }}
+          onClick={() => { playSibling(NEXT); }}
         />
 
         <div className="audio-frame">
           <span className="audio-title top">{propsAudioName}</span>
           <audio
             className="audio-file bottom"
-            controls="controls"
+            controls={true}
             preload="metadata"
             src={propsAudioSrc}
-            onPlay={() => { this.setPlaying(true); }}
-            onPlaying={() => { this.setPlaying(true); }}
-            onPause={() => { this.setPlaying(false); }}
-            onEnded={() => { propsPlayNext(this.track); }}
-            ref={(_audio) => { this.audio = _audio; }}
+            onPlay={() => { setPlaying(true); }}
+            onPlaying={() => { setPlaying(true); }}
+            onPause={() => { setPlaying(false); }}
+            onEnded={() => { propsPlayNext(track); }}
+            ref={(_audio) => { audioFile = _audio; }}
           />
         </div>
 
@@ -150,8 +127,6 @@ export class AudioTrack extends Component<Props, State> {
             />
           ))
         }
-
       </div>
     );
-  }
-}
+} 
